@@ -29,6 +29,14 @@ describe('`class BaseNumbering`', () => {
     expect(bn.centerPoint.y).toBeCloseTo(259.5);
   });
 
+  test('`get id()`', () => {
+    let domNode = SVGTextElementMock.create();
+    domNode.id = 'id-182418274892';
+
+    let bn = new BaseNumbering(domNode, new NucleobaseMock());
+    expect(bn.id).toBe('id-182418274892');
+  });
+
   test('`get textContent()`', () => {
     let domNode = SVGTextElementMock.create();
     domNode.textContent = '19.316';
