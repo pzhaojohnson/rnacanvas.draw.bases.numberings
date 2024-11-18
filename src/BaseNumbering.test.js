@@ -44,6 +44,67 @@ describe('`class BaseNumbering`', () => {
     let bn = new BaseNumbering(domNode, new NucleobaseMock());
     expect(bn.textContent).toBe('19.316');
   });
+
+  test('`hasAttribute()`', () => {
+    let domNode = SVGTextElementMock.create();
+    domNode.setAttribute('font-style', 'italic');
+
+    let bn = new BaseNumbering(domNode, new NucleobaseMock());
+    expect(bn.hasAttribute('font-style')).toBe(true);
+
+    expect(domNode.hasAttribute('font-weight')).toBe(false);
+    expect(bn.hasAttribute('font-weight')).toBe(false);
+  });
+
+  test('`getAttribute()`', () => {
+    let domNode = SVGTextElementMock.create();
+    domNode.setAttribute('font-size', '18.249cm');
+
+    let bn = new BaseNumbering(domNode, new NucleobaseMock());
+    expect(bn.getAttribute('font-size')).toBe('18.249cm');
+
+    expect(bn.hasAttribute('font-style')).toBeFalsy();
+    expect(bn.getAttribute('font-style')).toBe(null);
+  });
+
+  test('`setAttribute()`', () => {
+    let domNode = SVGTextElementMock.create();
+
+    let bn = new BaseNumbering(domNode, new NucleobaseMock());
+
+    expect(domNode.hasAttribute('font-style')).toBeFalsy();
+
+    bn.setAttribute('font-style', 'italic');
+    expect(domNode.getAttribute('font-style')).toBe('italic');
+  });
+
+  test('`setAttributes()`', () => {
+    let domNode = SVGTextElementMock.create();
+
+    let bn = new BaseNumbering(domNode, new NucleobaseMock());
+
+    expect(() => bn.setAttributes({})).not.toThrow();
+
+    bn.setAttributes({ 'font-size': '25.01pt' });
+    expect(domNode.getAttribute('font-size')).toBe('25.01pt');
+
+    bn.setAttributes({ 'font-size': '60cm', 'font-weight': '800', 'font-style': 'italic' });
+    expect(domNode.getAttribute('font-size')).toBe('60cm');
+    expect(domNode.getAttribute('font-weight')).toBe('800');
+    expect(domNode.getAttribute('font-style')).toBe('italic');
+  });
+
+  test('`removeAttribute()`', () => {
+    let domNode = SVGTextElementMock.create();
+
+    let bn = new BaseNumbering(domNode, new NucleobaseMock());
+
+    domNode.setAttribute('font-size', '72.1cm');
+    expect(domNode.hasAttribute('font-size')).toBeTruthy();
+
+    bn.removeAttribute('font-size');
+    expect(domNode.hasAttribute('font-size')).toBeFalsy();
+  });
 });
 
 const SVGTextElementMock = {

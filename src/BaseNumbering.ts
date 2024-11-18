@@ -31,4 +31,24 @@ export class BaseNumbering<B extends Nucleobase> {
   get textContent() {
     return this.domNode.textContent;
   }
+
+  hasAttribute(name: string): boolean {
+    return this.domNode.hasAttribute(name);
+  }
+
+  getAttribute(name: string) {
+    return this.domNode.getAttribute(name);
+  }
+
+  setAttribute(name: string, value: string): void {
+    this.domNode.setAttribute(name, value);
+  }
+
+  setAttributes(attributes: { [name: string]: string }): void {
+    Object.entries(attributes).forEach(([name, value]) => this.setAttribute(name, value));
+  }
+
+  removeAttribute(name: string): void {
+    this.domNode.removeAttribute(name);
+  }
 }
