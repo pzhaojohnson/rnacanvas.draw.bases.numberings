@@ -28,11 +28,22 @@ describe('`class BaseNumbering`', () => {
     owner.centerPoint.y = 116;
     expect(bn.centerPoint.y).toBeCloseTo(259.5);
   });
+
+  test('`get textContent()`', () => {
+    let domNode = SVGTextElementMock.create();
+    domNode.textContent = '19.316';
+
+    let bn = new BaseNumbering(domNode, new NucleobaseMock());
+    expect(bn.textContent).toBe('19.316');
+  });
 });
 
 const SVGTextElementMock = {
   create: () => {
     let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+
+    text.setAttribute('x', '0');
+    text.setAttribute('y', '0');
 
     text.x = {
       get baseVal() { return text.getAttribute('x').split(',').map(value => ({ value: Number.parseFloat(value) })); }

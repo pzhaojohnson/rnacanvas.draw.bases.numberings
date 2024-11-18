@@ -23,4 +23,8 @@ export class BaseNumbering<B extends Nucleobase> {
     this.centerPoint.x = this.owner.centerPoint.x + this.#displacement.x;
     this.centerPoint.y = this.owner.centerPoint.y + this.#displacement.y;
   }
+
+  get textContent() {
+    return this.domNode.textContent;
+  }
 }
