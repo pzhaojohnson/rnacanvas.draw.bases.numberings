@@ -5,6 +5,26 @@
 import { BaseNumbering } from './BaseNumbering';
 
 describe('`class BaseNumbering`', () => {
+  test('`static numbering()`', () => {
+    let b = new NucleobaseMock();
+    b.centerPoint.x = 107.3;
+    b.centerPoint.y = -51;
+
+    let bn = BaseNumbering.numbering(b, 27);
+
+    // was assigned a UUID
+    expect(bn.id.length).toBeGreaterThanOrEqual(36);
+    expect(bn.domNode.id.length).toBeGreaterThanOrEqual(36);
+
+    expect(bn.textContent).toBe('27');
+
+    Object.entries(BaseNumbering.defaultValues.attributes).forEach(([name, value]) => {
+      expect(bn.getAttribute(name)).toBe(value);
+    });
+
+    expect(bn.displacement.magnitude).toBeCloseTo(0);
+  });
+
   test('`constructor()`', () => {
     let domNode = SVGTextElementMock.create();
 
@@ -142,9 +162,11 @@ describe('`class BaseNumbering`', () => {
   });
 });
 
+const createElementNS = document.createElementNS;
+
 const SVGTextElementMock = {
   create: () => {
-    let text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    let text = createElementNS.call(document, 'http://www.w3.org/2000/svg', 'text');
 
     text.setAttribute('x', '0');
     text.setAttribute('y', '0');
@@ -161,7 +183,7 @@ const SVGTextElementMock = {
       let x = Math.min(...text.x.baseVal.map(length => length.value));
       let y = Math.min(...text.y.baseVal.map(length => length.value));
 
-      let height = Number.parseFloat(text.getAttribute('font-size'));
+      let height = Number.parseFloat(text.getAttribute('font-size') ?? '0');
       let width = (2 / 3) * height;
 
       return { x, y, width, height };
@@ -170,6 +192,14 @@ const SVGTextElementMock = {
     return text;
   },
 }
+
+document.createElementNS = (...args) => {
+  if (args[0] === 'http://www.w3.org/2000/svg' && args[1] === 'text') {
+    return SVGTextElementMock.create();
+  } else {
+    return createElementNS.call(document, ...args);
+  }
+};
 
 class NucleobaseMock {
   centerPoint = new EventfulPoint();

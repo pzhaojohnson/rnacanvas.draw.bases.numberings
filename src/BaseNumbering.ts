@@ -1,5 +1,7 @@
 import type { Nucleobase } from './Nucleobase';
 
+import { assignUUID } from '@rnacanvas/draw.svg';
+
 import { CenterPoint } from '@rnacanvas/draw.svg.text';
 
 import { Vector } from '@rnacanvas/vectors.oopified';
@@ -7,6 +9,35 @@ import { Vector } from '@rnacanvas/vectors.oopified';
 import { displacement } from '@rnacanvas/points';
 
 export class BaseNumbering<B extends Nucleobase> {
+  static defaultValues = {
+    attributes: {
+      'font-family': 'Arial',
+      'font-size': '8',
+      'font-weight': '400',
+      'fill': '#808080',
+    },
+  };
+
+  /**
+   * Creates and returns a new base numbering
+   * that numbers the given base the specified number.
+   */
+  static numbering<B extends Nucleobase>(b: B, n: number): BaseNumbering<B> {
+    let domNode = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+
+    assignUUID(domNode);
+
+    domNode.textContent = `${n}`;
+
+    let bn = new BaseNumbering(domNode, b);
+
+    bn.setAttributes(BaseNumbering.defaultValues.attributes);
+
+    bn.displacement.magnitude = 0;
+
+    return bn;
+  }
+
   readonly centerPoint;
 
   #displacement;
