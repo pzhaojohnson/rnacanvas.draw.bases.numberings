@@ -105,6 +105,41 @@ describe('`class BaseNumbering`', () => {
     bn.removeAttribute('font-size');
     expect(domNode.hasAttribute('font-size')).toBeFalsy();
   });
+
+  test('`get displacement()`', () => {
+    let domNode = SVGTextElementMock.create();
+    domNode.setAttribute('x', '74');
+    domNode.setAttribute('y', '283');
+    domNode.setAttribute('font-size', '21');
+    domNode.textContent = '5';
+
+    let owner = new NucleobaseMock();
+    owner.centerPoint.x = 101;
+    owner.centerPoint.y = 250;
+
+    let bn = new BaseNumbering(domNode, owner);
+
+    expect(bn.displacement.x).toBeCloseTo(-20);
+    expect(bn.displacement.y).toBeCloseTo(43.5);
+    expect(bn.displacement.magnitude).toBeCloseTo(((-20)**2 + (43.5)**2)**0.5);
+    expect(bn.displacement.direction).toBeCloseTo(Math.atan2(43.5, -20));
+
+    bn.displacement.x = 12;
+    expect(domNode.getAttribute('x')).toBe('106');
+    expect(domNode.getAttribute('y')).toBe('283');
+
+    bn.displacement.y = -19;
+    expect(domNode.getAttribute('x')).toBe('106');
+    expect(domNode.getAttribute('y')).toBe('220.5');
+
+    bn.displacement.magnitude = 40;
+    expect(bn.domNode.getAttribute('x')).toBe(`${101 + (40 * Math.cos(Math.atan2(-19, 12))) - 7}`);
+    expect(bn.domNode.getAttribute('y')).toBe(`${250 + (40 * Math.sin(Math.atan2(-19, 12))) - 10.5}`);
+
+    bn.displacement.direction = 5.21 * Math.PI;
+    expect(bn.domNode.getAttribute('x')).toBe(`${101 + (40 * Math.cos(5.21 * Math.PI)) - 7}`);
+    expect(bn.domNode.getAttribute('y')).toBe(`${250 + (40 * Math.sin(5.21 * Math.PI)) - 10.5}`);
+  });
 });
 
 const SVGTextElementMock = {

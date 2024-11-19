@@ -51,4 +51,44 @@ export class BaseNumbering<B extends Nucleobase> {
   removeAttribute(name: string): void {
     this.domNode.removeAttribute(name);
   }
+
+  get displacement() {
+    const getX = () => this.#displacement.x;
+    const setX = (x: number) => {
+      this.#displacement.x = x;
+      this.#reposition();
+    }
+
+    const getY = () => this.#displacement.y;
+    const setY = (y: number) => {
+      this.#displacement.y = y;
+      this.#reposition();
+    };
+
+    const getMagnitude = () => this.#displacement.magnitude;
+    const setMagnitude = (magnitude: number) => {
+      this.#displacement.magnitude = magnitude;
+      this.#reposition();
+    };
+
+    const getDirection = () => this.#displacement.direction;
+    const setDirection = (direction: number) => {
+      this.#displacement.direction = direction;
+      this.#reposition();
+    };
+
+    return {
+      get x() { return getX(); },
+      set x(x) { setX(x); },
+
+      get y() { return getY(); },
+      set y(y) { setY(y); },
+
+      get magnitude() { return getMagnitude(); },
+      set magnitude(magnitude) { setMagnitude(magnitude); },
+
+      get direction() { return getDirection(); },
+      set direction(direction) { setDirection(direction); },
+    };
+  }
 }
