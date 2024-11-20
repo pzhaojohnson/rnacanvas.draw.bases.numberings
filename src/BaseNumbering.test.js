@@ -176,6 +176,37 @@ describe('`class BaseNumbering`', () => {
     expect(bn.serialized().displacement.x).toBeCloseTo(98.2);
     expect(bn.serialized().displacement.y).toBeCloseTo(-33.6);
   });
+
+  test('`static deserialized()`', () => {
+    let parentDrawing = new DrawingMock();
+    for (let i = 0; i < 10; i++) { parentDrawing.bases.push(new NucleobaseMock()); }
+
+    let bn1 = BaseNumbering.numbering(parentDrawing.bases[6], 112);
+    parentDrawing.domNode.insertBefore(bn1.domNode, parentDrawing.bases[3].domNode);
+
+    expect(bn1.domNode).toBeTruthy();
+    expect(bn1.owner).toBeTruthy();
+    bn1.displacement.x = -174;
+    bn1.displacement.y = 88.4;
+
+    // not defined by JSDOM by default
+    globalThis.SVGTextElement = globalThis.SVGTextElement ?? SVGElement;
+
+    let bn2 = BaseNumbering.deserialized(bn1.serialized(), parentDrawing);
+
+    expect(bn2.domNode).toBe(bn1.domNode);
+    expect(bn2.owner).toBe(bn1.owner);
+    expect(bn2.displacement.x).toBeCloseTo(-174);
+    expect(bn2.displacement.y).toBeCloseTo(88.4);
+
+    // without saved displacement
+    let bn3 = BaseNumbering.deserialized({ ...bn1.serialized(), displacement: undefined }, parentDrawing);
+
+    expect(bn3.domNode).toBe(bn1.domNode);
+    expect(bn3.owner).toBe(bn1.owner);
+    expect(bn3.displacement.x).toBeCloseTo(-174);
+    expect(bn3.displacement.y).toBeCloseTo(88.4);
+  });
 });
 
 const createElementNS = document.createElementNS;
@@ -250,4 +281,10 @@ class EventfulPoint {
     this.#y = y;
     this.#callEventListeners('move');
   }
+}
+
+class DrawingMock {
+  domNode = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+  bases = [];
 }

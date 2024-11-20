@@ -1,5 +1,7 @@
 import type { Nucleobase } from './Nucleobase';
 
+import type { Drawing } from './Drawing';
+
 import { assignUUID } from '@rnacanvas/draw.svg';
 
 import { CenterPoint } from '@rnacanvas/draw.svg.text';
@@ -7,6 +9,12 @@ import { CenterPoint } from '@rnacanvas/draw.svg.text';
 import { Vector } from '@rnacanvas/vectors.oopified';
 
 import { displacement } from '@rnacanvas/points';
+
+import { isNonNullObject } from '@rnacanvas/value-check';
+
+import { isString } from '@rnacanvas/value-check';
+
+import { isPoint } from '@rnacanvas/points';
 
 export class BaseNumbering<B extends Nucleobase> {
   static defaultValues = {
@@ -134,5 +142,39 @@ export class BaseNumbering<B extends Nucleobase> {
       // directly save (since recalculating displacement during deserialization is somewhat imprecise)
       displacement: { x: this.displacement.x, y: this.displacement.y },
     };
+  }
+
+  /**
+   * Deserializes a saved base numbering.
+   *
+   * Throws if unable to do so.
+   *
+   * @param savedBaseNumbering The serialized form of the saved base numbering.
+   * @param parentDrawing The drawing that the saved base numbering is in.
+   */
+  static deserialized<B extends Nucleobase>(savedBaseNumbering: unknown, parentDrawing: Drawing<B>) {
+    if (!isNonNullObject(savedBaseNumbering)) { throw new Error('Saved base numbering must be a non-null object.'); }
+
+    if (!savedBaseNumbering.id) { throw new Error('Missing base numbering ID.'); }
+    if (!isString(savedBaseNumbering.id)) { throw new Error('Base numbering ID must be a string.'); }
+
+    let domNode = parentDrawing.domNode.querySelector('#' + savedBaseNumbering.id);
+    if (!domNode) { throw new Error('Base numbering DOM node not found.'); }
+    if (!(domNode instanceof SVGTextElement)) { throw new Error('Base numbering DOM node must be an SVG text element.'); }
+
+    if (!savedBaseNumbering.ownerID) { throw new Error('Missing base numbering owner ID.'); }
+    if (!isString(savedBaseNumbering.ownerID)) { throw new Error('Base numbering owner ID must be a string.'); }
+
+    let owner = parentDrawing.bases.find(b => b.id === savedBaseNumbering.ownerID);
+    if (!owner) { throw new Error('Unable to find base numbering owner.'); }
+
+    let bn = new BaseNumbering(domNode, owner);
+
+    if (isPoint(savedBaseNumbering.displacement)) {
+      bn.displacement.x = savedBaseNumbering.displacement.x;
+      bn.displacement.y = savedBaseNumbering.displacement.y;
+    }
+
+    return bn;
   }
 }
