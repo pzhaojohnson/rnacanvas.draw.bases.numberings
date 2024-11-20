@@ -160,6 +160,22 @@ describe('`class BaseNumbering`', () => {
     expect(bn.domNode.getAttribute('x')).toBe(`${101 + (40 * Math.cos(5.21 * Math.PI)) - 7}`);
     expect(bn.domNode.getAttribute('y')).toBe(`${250 + (40 * Math.sin(5.21 * Math.PI)) - 10.5}`);
   });
+
+  test('`serialized()`', () => {
+    let owner = new NucleobaseMock();
+    owner.id = 'id-18498128444';
+
+    let bn = BaseNumbering.numbering(owner, -157);
+    bn.domNode.id = 'id-9983719842';
+
+    bn.displacement.x = 98.2;
+    bn.displacement.y = -33.6;
+
+    expect(bn.serialized().id).toBe('id-9983719842');
+    expect(bn.serialized().ownerID).toBe('id-18498128444');
+    expect(bn.serialized().displacement.x).toBeCloseTo(98.2);
+    expect(bn.serialized().displacement.y).toBeCloseTo(-33.6);
+  });
 });
 
 const createElementNS = document.createElementNS;
@@ -202,6 +218,8 @@ document.createElementNS = (...args) => {
 };
 
 class NucleobaseMock {
+  id = `${Math.random()}`;
+
   centerPoint = new EventfulPoint();
 }
 

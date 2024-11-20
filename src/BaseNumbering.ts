@@ -122,4 +122,17 @@ export class BaseNumbering<B extends Nucleobase> {
       set direction(direction) { setDirection(direction); },
     };
   }
+
+  /**
+   * Returns the serialized form of the base numbering.
+   */
+  serialized() {
+    return {
+      id: this.id,
+      ownerID: this.owner.id,
+
+      // directly save (since recalculating displacement during deserialization is somewhat imprecise)
+      displacement: { x: this.displacement.x, y: this.displacement.y },
+    };
+  }
 }
