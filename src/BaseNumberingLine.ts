@@ -134,7 +134,7 @@ export class BaseNumberingLine<B extends Nucleobase> {
   }
 
   get length(): number {
-    return this.domNode.getTotalLength();
+    return distance(this.point1, this.point2);
   }
 
   set length(length) {
