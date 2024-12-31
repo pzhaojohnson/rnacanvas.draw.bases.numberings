@@ -24,8 +24,8 @@ export class BaseNumberingLine<B extends Nucleobase> {
       'stroke-width': '1',
       'stroke-opacity': '1',
     },
-    basePadding: 7,
-    numberingPadding: 2,
+    basePadding: 5,
+    numberingPadding: 1,
   };
 
   /**
