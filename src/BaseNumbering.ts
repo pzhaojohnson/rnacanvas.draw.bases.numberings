@@ -10,9 +10,7 @@ import { Vector } from '@rnacanvas/vectors.oopified';
 
 import { displacement } from '@rnacanvas/points';
 
-import { isNonNullObject } from '@rnacanvas/value-check';
-
-import { isString } from '@rnacanvas/value-check';
+import { VersionlessBaseNumbering } from './VersionlessBaseNumbering';
 
 import { isPoint } from '@rnacanvas/points';
 
@@ -153,28 +151,22 @@ export class BaseNumbering<B extends Nucleobase> {
    * @param parentDrawing The drawing that the saved base numbering is in.
    */
   static deserialized<B extends Nucleobase>(savedBaseNumbering: unknown, parentDrawing: Drawing<B>) {
-    if (!isNonNullObject(savedBaseNumbering)) { throw new Error('Saved base numbering must be a non-null object.'); }
+    let oldBaseNumbering = new VersionlessBaseNumbering(savedBaseNumbering);
 
-    if (!savedBaseNumbering.id) { throw new Error('Missing base numbering ID.'); }
-    if (!isString(savedBaseNumbering.id)) { throw new Error('Base numbering ID must be a string.'); }
-
-    let domNode = parentDrawing.domNode.querySelector('#' + savedBaseNumbering.id);
+    let domNode = parentDrawing.domNode.querySelector('#' + oldBaseNumbering.id);
     if (!domNode) { throw new Error('Base numbering DOM node not found.'); }
     if (!(domNode instanceof SVGTextElement)) { throw new Error('Base numbering DOM node must be an SVG text element.'); }
 
-    if (!savedBaseNumbering.ownerID) { throw new Error('Missing base numbering owner ID.'); }
-    if (!isString(savedBaseNumbering.ownerID)) { throw new Error('Base numbering owner ID must be a string.'); }
-
-    let owner = parentDrawing.bases.find(b => b.id === savedBaseNumbering.ownerID);
+    let owner = parentDrawing.bases.find(b => b.id === oldBaseNumbering.ownerID);
     if (!owner) { throw new Error('Unable to find base numbering owner.'); }
 
-    let bn = new BaseNumbering(domNode, owner);
+    let newBaseNumbering = new BaseNumbering(domNode, owner);
 
-    if (isPoint(savedBaseNumbering.displacement)) {
-      bn.displacement.x = savedBaseNumbering.displacement.x;
-      bn.displacement.y = savedBaseNumbering.displacement.y;
+    if (isPoint(oldBaseNumbering.displacement)) {
+      newBaseNumbering.displacement.x = oldBaseNumbering.displacement.x;
+      newBaseNumbering.displacement.y = oldBaseNumbering.displacement.y;
     }
 
-    return bn;
+    return newBaseNumbering;
   }
 }

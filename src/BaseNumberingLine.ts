@@ -8,9 +8,7 @@ import { distance, direction } from '@rnacanvas/points';
 
 import { Box } from '@rnacanvas/boxes';
 
-import { isNonNullObject } from '@rnacanvas/value-check';
-
-import { isString } from '@rnacanvas/value-check';
+import { VersionlessBaseNumberingLine } from './VersionlessBaseNumberingLine';
 
 import { isNumber } from '@rnacanvas/value-check';
 
@@ -226,27 +224,21 @@ export class BaseNumberingLine<B extends Nucleobase> {
    * @param parentDrawing The drawing that the saved base numbering line is in.
    */
   static deserialized<B extends Nucleobase>(savedBaseNumberingLine: unknown, parentDrawing: Drawing<B>): BaseNumberingLine<B> {
-    if (!isNonNullObject(savedBaseNumberingLine)) { throw new Error('Saved base numbering line must be a non-null object.'); }
+    let oldBaseNumberingLine = new VersionlessBaseNumberingLine(savedBaseNumberingLine);
 
-    if (!savedBaseNumberingLine.id) { throw new Error('Missing base numbering line ID.'); }
-    if (!isString(savedBaseNumberingLine.id)) { throw new Error('Base numbering line ID must be a string.'); }
-
-    let domNode = parentDrawing.domNode.querySelector('#' + savedBaseNumberingLine.id);
+    let domNode = parentDrawing.domNode.querySelector('#' + oldBaseNumberingLine.id);
     if (!domNode) { throw new Error('Base numbering line DOM node not found.'); }
     if (!(domNode instanceof SVGLineElement)) { throw new Error('Base numbering line DOM node must be an SVG line element.'); }
 
-    if (!savedBaseNumberingLine.ownerID) { throw new Error('Missing base numbering line owner ID.'); }
-    if (!isString(savedBaseNumberingLine.ownerID)) { throw new Error('Base numbering line owner ID must be a string.'); }
-
-    let owner = parentDrawing.baseNumberings.find(bn => bn.id === savedBaseNumberingLine.ownerID);
+    let owner = parentDrawing.baseNumberings.find(bn => bn.id === oldBaseNumberingLine.ownerID);
     if (!owner) { throw new Error('Base numbering line owner not found.'); }
 
-    let line = new BaseNumberingLine(domNode, owner);
+    let newBaseNumberingLine = new BaseNumberingLine(domNode, owner);
 
-    if (isNumber(savedBaseNumberingLine.basePadding)) { line.basePadding = savedBaseNumberingLine.basePadding; }
-    if (isNumber(savedBaseNumberingLine.numberingPadding)) { line.numberingPadding = savedBaseNumberingLine.numberingPadding; }
+    if (isNumber(oldBaseNumberingLine.basePadding)) { newBaseNumberingLine.basePadding = oldBaseNumberingLine.basePadding; }
+    if (isNumber(oldBaseNumberingLine.numberingPadding)) { newBaseNumberingLine.numberingPadding = oldBaseNumberingLine.numberingPadding; }
 
-    return line;
+    return newBaseNumberingLine;
   }
 }
 
