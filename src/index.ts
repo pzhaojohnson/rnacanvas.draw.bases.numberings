@@ -1,5 +1,5 @@
-import { BaseNumbering } from './BaseNumbering';
-export { BaseNumbering };
+import { Numbering } from './Numbering';
+export { Numbering };
 
-import { BaseNumberingLine } from './BaseNumberingLine';
-export { BaseNumberingLine };
+import { NumberingLine } from './NumberingLine';
+export { NumberingLine };

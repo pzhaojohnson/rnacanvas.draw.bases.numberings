@@ -1,6 +1,6 @@
 import type { Nucleobase } from './Nucleobase';
 
-import type { BaseNumbering } from './BaseNumbering';
+import type { Numbering } from './Numbering';
 
 import { assignUUID } from '@rnacanvas/draw.svg';
 
@@ -8,14 +8,14 @@ import { distance, direction } from '@rnacanvas/points';
 
 import { Box } from '@rnacanvas/boxes';
 
-import { VersionlessBaseNumberingLine } from './VersionlessBaseNumberingLine';
+import { VersionlessNumberingLine } from './VersionlessNumberingLine';
 
 import { isNumber } from '@rnacanvas/value-check';
 
 /**
- * A line to connect a base numbering to its owner base.
+ * A line connecting a numbering to its owner base.
  */
-export class BaseNumberingLine<B extends Nucleobase> {
+export class NumberingLine<B extends Nucleobase> {
   static defaultValues = {
     attributes: {
       'stroke': '#808080',
@@ -27,33 +27,33 @@ export class BaseNumberingLine<B extends Nucleobase> {
   };
 
   /**
-   * Creates and returns a new base numbering line
-   * connecting the given base numbering to its owner base.
+   * Creates and returns a new numbering line
+   * connecting the given numbering to its owner base.
    */
-  static connecting<B extends Nucleobase>(bn: BaseNumbering<B>): BaseNumberingLine<B> {
+  static connecting<B extends Nucleobase>(n: Numbering<B>): NumberingLine<B> {
     let domNode = document.createElementNS('http://www.w3.org/2000/svg', 'line');
 
     assignUUID(domNode);
 
-    domNode.setAttribute('x1', `${bn.owner.centerPoint.x}`);
-    domNode.setAttribute('y1', `${bn.owner.centerPoint.y}`);
-    domNode.setAttribute('x2', `${bn.centerPoint.x}`);
-    domNode.setAttribute('y2', `${bn.centerPoint.y}`);
+    domNode.setAttribute('x1', `${n.owner.centerPoint.x}`);
+    domNode.setAttribute('y1', `${n.owner.centerPoint.y}`);
+    domNode.setAttribute('x2', `${n.centerPoint.x}`);
+    domNode.setAttribute('y2', `${n.centerPoint.y}`);
 
-    let line = new BaseNumberingLine(domNode, bn);
+    let line = new NumberingLine(domNode, n);
 
-    line.set(BaseNumberingLine.defaultValues);
+    line.set(NumberingLine.defaultValues);
 
     return line;
   }
 
   /**
-   * Creates and returns a new base numbering line
-   * for the given base numbering
+   * Creates and returns a new numbering line
+   * for the given numbering
    * with zero base padding and zero numbering padding.
    */
-  static unpadded<B extends Nucleobase>(bn: BaseNumbering<B>): BaseNumberingLine<B> {
-    let line = BaseNumberingLine.connecting(bn);
+  static unpadded<B extends Nucleobase>(n: Numbering<B>): NumberingLine<B> {
+    let line = NumberingLine.connecting(n);
 
     line.basePadding = 0;
     line.numberingPadding = 0;
@@ -65,7 +65,7 @@ export class BaseNumberingLine<B extends Nucleobase> {
 
   #numberingPadding;
 
-  constructor(readonly domNode: SVGLineElement, readonly owner: BaseNumbering<B>) {
+  constructor(readonly domNode: SVGLineElement, readonly owner: Numbering<B>) {
     this.#basePadding = distance(owner.owner.centerPoint, this.point1);
 
     let ownerBBox = Box.matching(owner.domNode.getBBox());
@@ -110,7 +110,7 @@ export class BaseNumberingLine<B extends Nucleobase> {
   }
 
   /**
-   * The end point of the line that connects with the owner base of the base numbering.
+   * The end point of the line that connects with the owner base of the numbering.
    */
   get point1(): Point {
     return { x: this.x1, y: this.y1 };
@@ -125,7 +125,7 @@ export class BaseNumberingLine<B extends Nucleobase> {
   }
 
   /**
-   * The end point of the line that connects with the base numbering.
+   * The end point of the line that connects with the numbering.
    */
   get point2(): Point {
     return { x: this.x2, y: this.y2 };
@@ -147,7 +147,7 @@ export class BaseNumberingLine<B extends Nucleobase> {
   }
 
   /**
-   * The angle (in radians) that is the direction of the base numbering line
+   * The angle (in radians) that is the direction of the numbering line
    * (from point 1 to point 2).
    */
   get direction(): number {
@@ -160,7 +160,7 @@ export class BaseNumberingLine<B extends Nucleobase> {
 
     this.owner.displacement.direction = direction;
 
-    // maintain the length of the base numbering line
+    // maintain the length of the numbering line
     this.length = length;
   }
 
@@ -182,7 +182,7 @@ export class BaseNumberingLine<B extends Nucleobase> {
     this.#reposition();
   }
 
-  set(values: Partial<BaseNumberingLineValues>): void {
+  set(values: Partial<NumberingLineValues>): void {
     values.attributes ? this.setAttributes(values.attributes) : {};
 
     isNumber(values.basePadding) ? this.basePadding = values.basePadding : {};
@@ -202,7 +202,7 @@ export class BaseNumberingLine<B extends Nucleobase> {
   }
 
   /**
-   * Returns the serialized form of the base numbering.
+   * Returns the serialized form of the numbering line.
    */
   serialized() {
     return {
@@ -216,40 +216,40 @@ export class BaseNumberingLine<B extends Nucleobase> {
   }
 
   /**
-   * Deserializes the saved base numbering line.
+   * Deserializes the saved numbering line.
    *
    * Throws if unable to do so.
    *
-   * @param savedBaseNumberingLine The serialized form of the saved base numbering line.
-   * @param parentDrawing The drawing that the saved base numbering line is in.
+   * @param savedNumberingLine The serialized form of the saved numbering line.
+   * @param parentDrawing The drawing that the saved numbering line is in.
    */
-  static deserialized<B extends Nucleobase>(savedBaseNumberingLine: unknown, parentDrawing: Drawing<B>): BaseNumberingLine<B> {
-    let oldBaseNumberingLine = new VersionlessBaseNumberingLine(savedBaseNumberingLine);
+  static deserialized<B extends Nucleobase>(savedNumberingLine: unknown, parentDrawing: Drawing<B>): NumberingLine<B> {
+    let oldNumberingLine = new VersionlessNumberingLine(savedNumberingLine);
 
-    let domNode = parentDrawing.domNode.querySelector('#' + oldBaseNumberingLine.id);
-    if (!domNode) { throw new Error('Base numbering line DOM node not found.'); }
-    if (!(domNode instanceof SVGLineElement)) { throw new Error('Base numbering line DOM node must be an SVG line element.'); }
+    let domNode = parentDrawing.domNode.querySelector('#' + oldNumberingLine.id);
+    if (!domNode) { throw new Error('Numbering line DOM node not found.'); }
+    if (!(domNode instanceof SVGLineElement)) { throw new Error('Numbering line DOM node must be an SVG line element.'); }
 
-    let owner = parentDrawing.baseNumberings.find(bn => bn.id === oldBaseNumberingLine.ownerID);
-    if (!owner) { throw new Error('Base numbering line owner not found.'); }
+    let owner = parentDrawing.numberings.find(bn => bn.id === oldNumberingLine.ownerID);
+    if (!owner) { throw new Error('Numbering line owner not found.'); }
 
-    let newBaseNumberingLine = new BaseNumberingLine(domNode, owner);
+    let newNumberingLine = new NumberingLine(domNode, owner);
 
-    if (isNumber(oldBaseNumberingLine.basePadding)) { newBaseNumberingLine.basePadding = oldBaseNumberingLine.basePadding; }
-    if (isNumber(oldBaseNumberingLine.numberingPadding)) { newBaseNumberingLine.numberingPadding = oldBaseNumberingLine.numberingPadding; }
+    if (isNumber(oldNumberingLine.basePadding)) { newNumberingLine.basePadding = oldNumberingLine.basePadding; }
+    if (isNumber(oldNumberingLine.numberingPadding)) { newNumberingLine.numberingPadding = oldNumberingLine.numberingPadding; }
 
-    return newBaseNumberingLine;
+    return newNumberingLine;
   }
 }
 
-type BaseNumberingLineValues = {
+type NumberingLineValues = {
   attributes: { [name: string]: string },
   basePadding: number;
   numberingPadding: number;
 };
 
 /**
- * The drawing interface used by base numbering lines.
+ * The drawing interface used by numbering lines.
  */
 interface Drawing<B extends Nucleobase> {
   /**
@@ -258,12 +258,12 @@ interface Drawing<B extends Nucleobase> {
   domNode: SVGSVGElement;
 
   /**
-   * All base numberings in the drawing.
+   * All numberings in the drawing.
    *
    * Is required to be an array to improve performance
    * (as opposed to allowing this to be any form of iterable).
    */
-  baseNumberings: BaseNumbering<B>[];
+  numberings: Numbering<B>[];
 }
 
 type Point = {

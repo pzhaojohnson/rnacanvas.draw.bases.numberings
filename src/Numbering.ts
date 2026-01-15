@@ -10,11 +10,11 @@ import { Vector } from '@rnacanvas/vectors.oopified';
 
 import { displacement } from '@rnacanvas/points';
 
-import { VersionlessBaseNumbering } from './VersionlessBaseNumbering';
+import { VersionlessNumbering } from './VersionlessNumbering';
 
 import { isPoint } from '@rnacanvas/points';
 
-export class BaseNumbering<B extends Nucleobase> {
+export class Numbering<B extends Nucleobase> {
   static defaultValues = {
     attributes: {
       'font-family': 'Arial',
@@ -25,19 +25,19 @@ export class BaseNumbering<B extends Nucleobase> {
   };
 
   /**
-   * Creates and returns a new base numbering
-   * that numbers the given base the specified number.
+   * Creates and returns a new numbering
+   * that numbers the specified base the specified number.
    */
-  static numbering<B extends Nucleobase>(b: B, n: number): BaseNumbering<B> {
+  static numbering<B extends Nucleobase>(b: B, n: number): Numbering<B> {
     let domNode = document.createElementNS('http://www.w3.org/2000/svg', 'text');
 
     assignUUID(domNode);
 
     domNode.textContent = `${n}`;
 
-    let bn = new BaseNumbering(domNode, b);
+    let bn = new Numbering(domNode, b);
 
-    bn.setAttributes(BaseNumbering.defaultValues.attributes);
+    bn.setAttributes(Numbering.defaultValues.attributes);
 
     bn.displacement.magnitude = 0;
 
@@ -130,7 +130,7 @@ export class BaseNumbering<B extends Nucleobase> {
   }
 
   /**
-   * Returns the serialized form of the base numbering.
+   * Returns the serialized form of the numbering.
    */
   serialized() {
     return {
@@ -143,30 +143,30 @@ export class BaseNumbering<B extends Nucleobase> {
   }
 
   /**
-   * Deserializes a saved base numbering.
+   * Deserializes a saved numbering.
    *
    * Throws if unable to do so.
    *
-   * @param savedBaseNumbering The serialized form of the saved base numbering.
-   * @param parentDrawing The drawing that the saved base numbering is in.
+   * @param savedNumbering The serialized form of the saved numbering.
+   * @param parentDrawing The drawing that the saved numbering is in.
    */
-  static deserialized<B extends Nucleobase>(savedBaseNumbering: unknown, parentDrawing: Drawing<B>) {
-    let oldBaseNumbering = new VersionlessBaseNumbering(savedBaseNumbering);
+  static deserialized<B extends Nucleobase>(savedNumbering: unknown, parentDrawing: Drawing<B>) {
+    let oldNumbering = new VersionlessNumbering(savedNumbering);
 
-    let domNode = parentDrawing.domNode.querySelector('#' + oldBaseNumbering.id);
-    if (!domNode) { throw new Error('Base numbering DOM node not found.'); }
-    if (!(domNode instanceof SVGTextElement)) { throw new Error('Base numbering DOM node must be an SVG text element.'); }
+    let domNode = parentDrawing.domNode.querySelector('#' + oldNumbering.id);
+    if (!domNode) { throw new Error('Numbering DOM node not found.'); }
+    if (!(domNode instanceof SVGTextElement)) { throw new Error('Numbering DOM node must be an SVG text element.'); }
 
-    let owner = parentDrawing.bases.find(b => b.id === oldBaseNumbering.ownerID);
-    if (!owner) { throw new Error('Unable to find base numbering owner.'); }
+    let owner = parentDrawing.bases.find(b => b.id === oldNumbering.ownerID);
+    if (!owner) { throw new Error('Unable to find numbering owner.'); }
 
-    let newBaseNumbering = new BaseNumbering(domNode, owner);
+    let newNumbering = new Numbering(domNode, owner);
 
-    if (isPoint(oldBaseNumbering.displacement)) {
-      newBaseNumbering.displacement.x = oldBaseNumbering.displacement.x;
-      newBaseNumbering.displacement.y = oldBaseNumbering.displacement.y;
+    if (isPoint(oldNumbering.displacement)) {
+      newNumbering.displacement.x = oldNumbering.displacement.x;
+      newNumbering.displacement.y = oldNumbering.displacement.y;
     }
 
-    return newBaseNumbering;
+    return newNumbering;
   }
 }

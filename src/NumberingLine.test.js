@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { BaseNumberingLine } from './BaseNumberingLine';
+import { NumberingLine } from './NumberingLine';
 
 import { SVGLineElementMock } from './SVGLineElementMock';
 
@@ -14,24 +14,24 @@ import { EventfulPoint } from './EventfulPoint';
 
 import { distance, direction } from '@rnacanvas/points';
 
-describe('`class BaseNumberingLine`', () => {
+describe('`class NumberingLine`', () => {
   test('`static connecting()`', () => {
-    let bn = new BaseNumberingMock();
+    let n = new NumberingMock();
 
-    bn.domNode.setAttribute('font-size', '12');
+    n.domNode.setAttribute('font-size', '12');
 
-    bn.centerPoint.x = -57;
-    bn.centerPoint.y = 105;
+    n.centerPoint.x = -57;
+    n.centerPoint.y = 105;
 
-    bn.owner.centerPoint.x = 23;
-    bn.owner.centerPoint.y = 64;
+    n.owner.centerPoint.x = 23;
+    n.owner.centerPoint.y = 64;
 
-    BaseNumberingLine.defaultValues.attributes['stroke'] = '#897118';
+    NumberingLine.defaultValues.attributes['stroke'] = '#897118';
 
-    BaseNumberingLine.defaultValues.basePadding = 2.74;
-    BaseNumberingLine.defaultValues.numberingPadding = 6.28;
+    NumberingLine.defaultValues.basePadding = 2.74;
+    NumberingLine.defaultValues.numberingPadding = 6.28;
 
-    let line = BaseNumberingLine.connecting(bn);
+    let line = NumberingLine.connecting(n);
 
     // assigns a UUID
     expect(line.domNode.id).toBeTruthy();
@@ -50,24 +50,24 @@ describe('`class BaseNumberingLine`', () => {
   });
 
   test('`static unpadded()`', () => {
-    let bn = new BaseNumberingMock();
+    let n = new NumberingMock();
 
     // make nonzero
-    BaseNumberingLine.defaultValues.basePadding = 8;
-    BaseNumberingLine.defaultValues.numberingPadding = 9;
+    NumberingLine.defaultValues.basePadding = 8;
+    NumberingLine.defaultValues.numberingPadding = 9;
 
-    let line1 = BaseNumberingLine.unpadded(bn);
+    let line1 = NumberingLine.unpadded(n);
     expect(line1.basePadding).toBeCloseTo(0);
     expect(line1.numberingPadding).toBeCloseTo(0);
 
     // would otherwise have nonzero paddings
-    let line2 = BaseNumberingLine.connecting(bn);
+    let line2 = NumberingLine.connecting(n);
     expect(line2.basePadding).not.toBeCloseTo(0);
     expect(line2.numberingPadding).not.toBeCloseTo(0);
   });
 
   test('`constructor()`', () => {
-    let owner = new BaseNumberingMock();
+    let owner = new NumberingMock();
 
     owner.domNode.setAttribute('font-size', '7');
 
@@ -77,12 +77,12 @@ describe('`class BaseNumberingLine`', () => {
     owner.owner.centerPoint.x = 101;
     owner.owner.centerPoint.y = 78;
 
-    let line1 = BaseNumberingLine.connecting(owner);
+    let line1 = NumberingLine.connecting(owner);
 
     line1.basePadding = 4.2;
     line1.numberingPadding = 2.7;
 
-    let line2 = new BaseNumberingLine(line1.domNode, owner);
+    let line2 = new NumberingLine(line1.domNode, owner);
 
     expect(line2.domNode).toBe(line1.domNode);
     expect(line2.owner).toBe(owner);
@@ -90,10 +90,10 @@ describe('`class BaseNumberingLine`', () => {
     expect(line2.basePadding).toBeCloseTo(4.2);
     expect(line2.numberingPadding).toBeCloseTo(2.7);
 
-    // move owner base numbering
+    // move owner numbering
     owner.centerPoint.x += 10;
 
-    // the base numbering line was repositioned
+    // the numbering line was repositioned
     expect(Number.parseFloat(line2.domNode.getAttribute('x1'))).toBeCloseTo(101 + (4.2 * Math.cos(Math.atan2((-12) - 78, 40 - 101))));
     expect(Number.parseFloat(line2.domNode.getAttribute('y1'))).toBeCloseTo(78 + (4.2 * Math.sin(Math.atan2((-12) - 78, 40 - 101))));
     expect(Number.parseFloat(line2.domNode.getAttribute('x2'))).toBeCloseTo(43.84817237820477);
@@ -102,7 +102,7 @@ describe('`class BaseNumberingLine`', () => {
     // move owner base
     owner.owner.centerPoint.y -= 15;
 
-    // the base numbering line was repositioned
+    // the numbering line was repositioned
     expect(Number.parseFloat(line2.domNode.getAttribute('x1'))).toBeCloseTo(101 + (4.2 * Math.cos(Math.atan2((-12) - 63, 40 - 101))));
     expect(Number.parseFloat(line2.domNode.getAttribute('y1'))).toBeCloseTo(63 + (4.2 * Math.sin(Math.atan2((-12) - 63, 40 - 101))));
     expect(Number.parseFloat(line2.domNode.getAttribute('x2'))).toBeCloseTo(44.036984640552305);
@@ -110,14 +110,14 @@ describe('`class BaseNumberingLine`', () => {
   });
 
   test('`get id()`', () => {
-    let line = new BaseNumberingLine(SVGLineElementMock.create(), new BaseNumberingMock());
+    let line = new NumberingLine(SVGLineElementMock.create(), new NumberingMock());
 
     line.domNode.id = 'id-88297319827323';
     expect(line.id).toBe('id-88297319827323');
   });
 
   test('`hasAttribute()`', () => {
-    let line = new BaseNumberingLine(SVGLineElementMock.create(), new BaseNumberingMock());
+    let line = new NumberingLine(SVGLineElementMock.create(), new NumberingMock());
 
     expect(line.hasAttribute('stroke-width')).toBe(false);
 
@@ -126,21 +126,21 @@ describe('`class BaseNumberingLine`', () => {
   });
 
   test('`getAttribute()`', () => {
-    let line = new BaseNumberingLine(SVGLineElementMock.create(), new BaseNumberingMock());
+    let line = new NumberingLine(SVGLineElementMock.create(), new NumberingMock());
 
     line.domNode.setAttribute('stroke', '#abc772');
     expect(line.getAttribute('stroke')).toBe('#abc772');
   });
 
   test('`setAttribute()`', () => {
-    let line = new BaseNumberingLine(SVGLineElementMock.create(), new BaseNumberingMock());
+    let line = new NumberingLine(SVGLineElementMock.create(), new NumberingMock());
 
     line.setAttribute('stroke-width', '6.24');
     expect(line.domNode.getAttribute('stroke-width')).toBe('6.24');
   });
 
   test('`setAttributes()`', () => {
-    let line = new BaseNumberingLine(SVGLineElementMock.create(), new BaseNumberingMock());
+    let line = new NumberingLine(SVGLineElementMock.create(), new NumberingMock());
 
     // zero attributes
     expect(() => line.setAttributes({})).not.toThrow();
@@ -157,7 +157,7 @@ describe('`class BaseNumberingLine`', () => {
   });
 
   test('`removeAttribute()`', () => {
-    let line = new BaseNumberingLine(SVGLineElementMock.create(), new BaseNumberingMock());
+    let line = new NumberingLine(SVGLineElementMock.create(), new NumberingMock());
 
     line.domNode.setAttribute('stroke-width', '2');
     expect(line.domNode.hasAttribute('stroke-width')).toBeTruthy();
@@ -168,9 +168,9 @@ describe('`class BaseNumberingLine`', () => {
 
   test('`get x1()`', () => {
     let domNode = SVGLineElementMock.create();
-    let owner = new BaseNumberingMock();
+    let owner = new NumberingMock();
 
-    let line = new BaseNumberingLine(domNode, owner);
+    let line = new NumberingLine(domNode, owner);
 
     domNode.setAttribute('x1', '28.41');
     expect(line.x1).toBe(28.41);
@@ -178,9 +178,9 @@ describe('`class BaseNumberingLine`', () => {
 
   test('`get y1()`', () => {
     let domNode = SVGLineElementMock.create();
-    let owner = new BaseNumberingMock();
+    let owner = new NumberingMock();
 
-    let line = new BaseNumberingLine(domNode, owner);
+    let line = new NumberingLine(domNode, owner);
 
     domNode.setAttribute('y1', '-2.5');
     expect(line.y1).toBe(-2.5);
@@ -188,9 +188,9 @@ describe('`class BaseNumberingLine`', () => {
 
   test('`get point1()`', () => {
     let domNode = SVGLineElementMock.create();
-    let owner = new BaseNumberingMock();
+    let owner = new NumberingMock();
 
-    let line = new BaseNumberingLine(domNode, owner);
+    let line = new NumberingLine(domNode, owner);
 
     domNode.setAttribute('x1', '28.41');
     domNode.setAttribute('y1', '24.287');
@@ -199,9 +199,9 @@ describe('`class BaseNumberingLine`', () => {
 
   test('`get x2()`', () => {
     let domNode = SVGLineElementMock.create();
-    let owner = new BaseNumberingMock();
+    let owner = new NumberingMock();
 
-    let line = new BaseNumberingLine(domNode, owner);
+    let line = new NumberingLine(domNode, owner);
 
     domNode.setAttribute('x2', '51.3');
     expect(line.x2).toBe(51.3);
@@ -209,9 +209,9 @@ describe('`class BaseNumberingLine`', () => {
 
   test('`get y2()`', () => {
     let domNode = SVGLineElementMock.create();
-    let owner = new BaseNumberingMock();
+    let owner = new NumberingMock();
 
-    let line = new BaseNumberingLine(domNode, owner);
+    let line = new NumberingLine(domNode, owner);
 
     domNode.setAttribute('y2', '104');
     expect(line.y2).toBe(104);
@@ -219,9 +219,9 @@ describe('`class BaseNumberingLine`', () => {
 
   test('`get point2()`', () => {
     let domNode = SVGLineElementMock.create();
-    let owner = new BaseNumberingMock();
+    let owner = new NumberingMock();
 
-    let line = new BaseNumberingLine(domNode, owner);
+    let line = new NumberingLine(domNode, owner);
 
     domNode.setAttribute('x2', '0.442');
     domNode.setAttribute('y2', '-18');
@@ -229,7 +229,7 @@ describe('`class BaseNumberingLine`', () => {
   });
 
   test('`get length()`', () => {
-    let line = BaseNumberingLine.unpadded(new BaseNumberingMock());
+    let line = NumberingLine.unpadded(new NumberingMock());
 
     line.owner.centerPoint.set({ x: 47, y: 52 });
     line.owner.owner.centerPoint.set({ x: 44, y: 56 });
@@ -238,7 +238,7 @@ describe('`class BaseNumberingLine`', () => {
   });
 
   test('`set length()`', () => {
-    let line = BaseNumberingLine.connecting(new BaseNumberingMock());
+    let line = NumberingLine.connecting(new NumberingMock());
 
     line.owner.domNode.setAttribute('font-size', '14');
 
@@ -271,7 +271,7 @@ describe('`class BaseNumberingLine`', () => {
   });
 
   test('`get direction()`', () => {
-    let line = BaseNumberingLine.unpadded(new BaseNumberingMock());
+    let line = NumberingLine.unpadded(new NumberingMock());
 
     line.owner.centerPoint.set({ x: -12, y: 88 });
     line.owner.owner.centerPoint.set({ x: 41, y: 9 });
@@ -280,7 +280,7 @@ describe('`class BaseNumberingLine`', () => {
   });
 
   test('`set direction()`', () => {
-    let line = BaseNumberingLine.connecting(new BaseNumberingMock());
+    let line = NumberingLine.connecting(new NumberingMock());
 
     line.owner.domNode.setAttribute('font-size', '14');
 
@@ -317,7 +317,7 @@ describe('`class BaseNumberingLine`', () => {
   });
 
   test('`get basePadding()`', () => {
-    let owner = new BaseNumberingMock();
+    let owner = new NumberingMock();
 
     owner.centerPoint.x = 101;
     owner.centerPoint.y = -23;
@@ -325,16 +325,16 @@ describe('`class BaseNumberingLine`', () => {
     owner.owner.centerPoint.x = 56;
     owner.owner.centerPoint.y = 88;
 
-    BaseNumberingLine.defaultValues.basePadding = 2.1;
+    NumberingLine.defaultValues.basePadding = 2.1;
 
-    let line = BaseNumberingLine.connecting(owner);
+    let line = NumberingLine.connecting(owner);
 
     expect(line.basePadding).toBeCloseTo(2.1);
   });
 
   test('`set basePadding()`', () => {
     let domNode = SVGLineElementMock.create();
-    let owner = new BaseNumberingMock();
+    let owner = new NumberingMock();
 
     owner.centerPoint.x = 101;
     owner.centerPoint.y = -23;
@@ -347,12 +347,12 @@ describe('`class BaseNumberingLine`', () => {
     domNode.setAttribute('x2', '101');
     domNode.setAttribute('y2', '-23');
 
-    let line = new BaseNumberingLine(domNode, owner);
+    let line = new NumberingLine(domNode, owner);
 
     line.basePadding = 3.9;
     expect(line.basePadding).toBeCloseTo(3.9);
 
-    // the base numbering line was repositioned
+    // the numbering line was repositioned
     expect(Number.parseFloat(domNode.getAttribute('x1'))).toBeCloseTo(56 + (3.9 * Math.cos(Math.atan2((-23) - 88, 101 - 56))));
     expect(Number.parseFloat(domNode.getAttribute('y1'))).toBeCloseTo(88 + (3.9 * Math.sin(Math.atan2((-23) - 88, 101 - 56))));
     expect(Number.parseFloat(domNode.getAttribute('x2'))).toBeCloseTo(101);
@@ -360,7 +360,7 @@ describe('`class BaseNumberingLine`', () => {
   });
 
   test('`get numberingPadding()`', () => {
-    let owner = new BaseNumberingMock();
+    let owner = new NumberingMock();
 
     owner.domNode.setAttribute('font-size', '9');
 
@@ -370,15 +370,15 @@ describe('`class BaseNumberingLine`', () => {
     owner.owner.centerPoint.x = 56;
     owner.owner.centerPoint.y = 88;
 
-    BaseNumberingLine.defaultValues.numberingPadding = 6.3;
+    NumberingLine.defaultValues.numberingPadding = 6.3;
 
-    let line = BaseNumberingLine.connecting(owner);
+    let line = NumberingLine.connecting(owner);
 
     expect(line.numberingPadding).toBeCloseTo(6.3);
   });
 
   test('`set numberingPadding()`', () => {
-    let owner = new BaseNumberingMock();
+    let owner = new NumberingMock();
 
     owner.domNode.setAttribute('font-size', '11');
 
@@ -388,13 +388,13 @@ describe('`class BaseNumberingLine`', () => {
     owner.owner.centerPoint.x = 56;
     owner.owner.centerPoint.y = 88;
 
-    let line = BaseNumberingLine.unpadded(owner);
+    let line = NumberingLine.unpadded(owner);
     expect(line.numberingPadding).toBeCloseTo(0);
 
     line.numberingPadding = 1.6;
     expect(line.numberingPadding).toBeCloseTo(1.6);
 
-    // the base numbering line was repositioned
+    // the numbering line was repositioned
     expect(Number.parseFloat(line.domNode.getAttribute('x1'))).toBeCloseTo(56);
     expect(Number.parseFloat(line.domNode.getAttribute('y1'))).toBeCloseTo(88);
     expect(Number.parseFloat(line.domNode.getAttribute('x2'))).toBeCloseTo(98.16914209628753);
@@ -402,7 +402,7 @@ describe('`class BaseNumberingLine`', () => {
   });
 
   test('`set()`', () => {
-    let line = new BaseNumberingLine(SVGLineElementMock.create(), new BaseNumberingMock());
+    let line = new NumberingLine(SVGLineElementMock.create(), new NumberingMock());
 
     expect(() => line.set({})).not.toThrow();
 
@@ -417,7 +417,7 @@ describe('`class BaseNumberingLine`', () => {
   });
 
   test('`serialized()`', () => {
-    let line = new BaseNumberingLine(SVGLineElementMock.create(), new BaseNumberingMock());
+    let line = new NumberingLine(SVGLineElementMock.create(), new NumberingMock());
 
     line.domNode.id = 'id-9391788927482';
     line.owner.id = 'id-212481289481';
@@ -436,13 +436,13 @@ describe('`class BaseNumberingLine`', () => {
     let parentDrawing = new DrawingMock();
 
     [1, 2, 3, 4, 5].forEach(() => parentDrawing.domNode.append(SVGLineElementMock.create()));
-    [1, 2, 3, 4, 5, 6].forEach(() => parentDrawing.baseNumberings.push(new BaseNumberingMock()));
+    [1, 2, 3, 4, 5, 6].forEach(() => parentDrawing.numberings.push(new NumberingMock()));
 
-    let line1 = new BaseNumberingLine(SVGLineElementMock.create(), new BaseNumberingMock());
+    let line1 = new NumberingLine(SVGLineElementMock.create(), new NumberingMock());
     line1.domNode.id = 'id-8798147928724';
 
     parentDrawing.domNode.insertBefore(line1.domNode, parentDrawing.domNode.childNodes[2]);
-    parentDrawing.baseNumberings.splice(4, 0, line1.owner);
+    parentDrawing.numberings.splice(4, 0, line1.owner);
 
     expect(line1.domNode).toBeTruthy();
     expect(line1.owner).toBeTruthy();
@@ -453,7 +453,7 @@ describe('`class BaseNumberingLine`', () => {
     // not defined by JSDOM by default
     globalThis.SVGLineElement = globalThis.SVGLineElement ?? SVGElement;
 
-    let line2 = BaseNumberingLine.deserialized(line1.serialized(), parentDrawing);
+    let line2 = NumberingLine.deserialized(line1.serialized(), parentDrawing);
 
     expect(line2.domNode).toBe(line1.domNode);
     expect(line2.owner).toBe(line1.owner);
@@ -461,7 +461,7 @@ describe('`class BaseNumberingLine`', () => {
     expect(line2.numberingPadding).toBeCloseTo(5.22);
 
     // without saved base padding and numbering padding
-    let line3 = BaseNumberingLine.deserialized({ ...line1.serialized(), basePadding: undefined, numberingPadding: undefined }, parentDrawing);
+    let line3 = NumberingLine.deserialized({ ...line1.serialized(), basePadding: undefined, numberingPadding: undefined }, parentDrawing);
 
     expect(line3.domNode).toBe(line1.domNode);
     expect(line3.owner).toBe(line1.owner);
@@ -482,7 +482,7 @@ document.createElementNS = (...args) => {
   }
 };
 
-class BaseNumberingMock {
+class NumberingMock {
   domNode = SVGTextElementMock.create();
 
   owner = new NucleobaseMock();
@@ -528,5 +528,5 @@ class BaseNumberingMock {
 class DrawingMock {
   domNode = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
-  baseNumberings = [];
+  numberings = [];
 }

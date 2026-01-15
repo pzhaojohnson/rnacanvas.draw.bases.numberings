@@ -2,19 +2,19 @@
  * @jest-environment jsdom
  */
 
-import { BaseNumbering } from './BaseNumbering';
+import { Numbering } from './Numbering';
 
 import { SVGTextElementMock } from './SVGTextElementMock';
 
 import { NucleobaseMock } from './NucleobaseMock';
 
-describe('`class BaseNumbering`', () => {
+describe('`class Numbering`', () => {
   test('`static numbering()`', () => {
     let b = new NucleobaseMock();
     b.centerPoint.x = 107.3;
     b.centerPoint.y = -51;
 
-    let bn = BaseNumbering.numbering(b, 27);
+    let bn = Numbering.numbering(b, 27);
 
     // was assigned a UUID
     expect(bn.id.length).toBeGreaterThanOrEqual(36);
@@ -22,7 +22,7 @@ describe('`class BaseNumbering`', () => {
 
     expect(bn.textContent).toBe('27');
 
-    Object.entries(BaseNumbering.defaultValues.attributes).forEach(([name, value]) => {
+    Object.entries(Numbering.defaultValues.attributes).forEach(([name, value]) => {
       expect(bn.getAttribute(name)).toBe(value);
     });
 
@@ -41,7 +41,7 @@ describe('`class BaseNumbering`', () => {
     owner.centerPoint.x = 51;
     owner.centerPoint.y = -23;
 
-    let bn = new BaseNumbering(domNode, owner);
+    let bn = new Numbering(domNode, owner);
 
     expect(bn.domNode).toBe(domNode);
     expect(bn.owner).toBe(owner);
@@ -57,7 +57,7 @@ describe('`class BaseNumbering`', () => {
     let domNode = SVGTextElementMock.create();
     domNode.id = 'id-182418274892';
 
-    let bn = new BaseNumbering(domNode, new NucleobaseMock());
+    let bn = new Numbering(domNode, new NucleobaseMock());
     expect(bn.id).toBe('id-182418274892');
   });
 
@@ -65,7 +65,7 @@ describe('`class BaseNumbering`', () => {
     let domNode = SVGTextElementMock.create();
     domNode.textContent = '19.316';
 
-    let bn = new BaseNumbering(domNode, new NucleobaseMock());
+    let bn = new Numbering(domNode, new NucleobaseMock());
     expect(bn.textContent).toBe('19.316');
   });
 
@@ -73,7 +73,7 @@ describe('`class BaseNumbering`', () => {
     let domNode = SVGTextElementMock.create();
     domNode.setAttribute('font-style', 'italic');
 
-    let bn = new BaseNumbering(domNode, new NucleobaseMock());
+    let bn = new Numbering(domNode, new NucleobaseMock());
     expect(bn.hasAttribute('font-style')).toBe(true);
 
     expect(domNode.hasAttribute('font-weight')).toBe(false);
@@ -84,7 +84,7 @@ describe('`class BaseNumbering`', () => {
     let domNode = SVGTextElementMock.create();
     domNode.setAttribute('font-size', '18.249cm');
 
-    let bn = new BaseNumbering(domNode, new NucleobaseMock());
+    let bn = new Numbering(domNode, new NucleobaseMock());
     expect(bn.getAttribute('font-size')).toBe('18.249cm');
 
     expect(bn.hasAttribute('font-style')).toBeFalsy();
@@ -94,7 +94,7 @@ describe('`class BaseNumbering`', () => {
   test('`setAttribute()`', () => {
     let domNode = SVGTextElementMock.create();
 
-    let bn = new BaseNumbering(domNode, new NucleobaseMock());
+    let bn = new Numbering(domNode, new NucleobaseMock());
 
     expect(domNode.hasAttribute('font-style')).toBeFalsy();
 
@@ -105,7 +105,7 @@ describe('`class BaseNumbering`', () => {
   test('`setAttributes()`', () => {
     let domNode = SVGTextElementMock.create();
 
-    let bn = new BaseNumbering(domNode, new NucleobaseMock());
+    let bn = new Numbering(domNode, new NucleobaseMock());
 
     expect(() => bn.setAttributes({})).not.toThrow();
 
@@ -121,7 +121,7 @@ describe('`class BaseNumbering`', () => {
   test('`removeAttribute()`', () => {
     let domNode = SVGTextElementMock.create();
 
-    let bn = new BaseNumbering(domNode, new NucleobaseMock());
+    let bn = new Numbering(domNode, new NucleobaseMock());
 
     domNode.setAttribute('font-size', '72.1cm');
     expect(domNode.hasAttribute('font-size')).toBeTruthy();
@@ -141,7 +141,7 @@ describe('`class BaseNumbering`', () => {
     owner.centerPoint.x = 101;
     owner.centerPoint.y = 250;
 
-    let bn = new BaseNumbering(domNode, owner);
+    let bn = new Numbering(domNode, owner);
 
     expect(bn.displacement.x).toBeCloseTo(-20);
     expect(bn.displacement.y).toBeCloseTo(43.5);
@@ -169,7 +169,7 @@ describe('`class BaseNumbering`', () => {
     let owner = new NucleobaseMock();
     owner.id = 'id-18498128444';
 
-    let bn = BaseNumbering.numbering(owner, -157);
+    let bn = Numbering.numbering(owner, -157);
     bn.domNode.id = 'id-9983719842';
 
     bn.displacement.x = 98.2;
@@ -185,7 +185,7 @@ describe('`class BaseNumbering`', () => {
     let parentDrawing = new DrawingMock();
     for (let i = 0; i < 10; i++) { parentDrawing.bases.push(new NucleobaseMock()); }
 
-    let bn1 = BaseNumbering.numbering(parentDrawing.bases[6], 112);
+    let bn1 = Numbering.numbering(parentDrawing.bases[6], 112);
     parentDrawing.domNode.insertBefore(bn1.domNode, parentDrawing.bases[3].domNode);
 
     expect(bn1.domNode).toBeTruthy();
@@ -196,7 +196,7 @@ describe('`class BaseNumbering`', () => {
     // not defined by JSDOM by default
     globalThis.SVGTextElement = globalThis.SVGTextElement ?? SVGElement;
 
-    let bn2 = BaseNumbering.deserialized(bn1.serialized(), parentDrawing);
+    let bn2 = Numbering.deserialized(bn1.serialized(), parentDrawing);
 
     expect(bn2.domNode).toBe(bn1.domNode);
     expect(bn2.owner).toBe(bn1.owner);
@@ -204,7 +204,7 @@ describe('`class BaseNumbering`', () => {
     expect(bn2.displacement.y).toBeCloseTo(88.4);
 
     // without saved displacement
-    let bn3 = BaseNumbering.deserialized({ ...bn1.serialized(), displacement: undefined }, parentDrawing);
+    let bn3 = Numbering.deserialized({ ...bn1.serialized(), displacement: undefined }, parentDrawing);
 
     expect(bn3.domNode).toBe(bn1.domNode);
     expect(bn3.owner).toBe(bn1.owner);
