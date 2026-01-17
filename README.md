@@ -20,8 +20,7 @@ import { Numbering, NumberingLine } from '@rnacanvas/draw.bases.numberings';
 A numbering for a [base](https://pzhaojohnson.github.io/rnacanvas.draw.bases/).
 
 ```javascript
-// a nucleobase
-b instanceof Nucleobase; // true
+var b = Nucleobase.create('G');
 
 // a numbering of 100 for the base
 var n = Numbering.numbering(b, 100);
@@ -49,8 +48,7 @@ app.drawing.domNode.contains(n.domNode); // true
 The base that the numbering belongs to.
 
 ```javascript
-// a nucleobase
-b instanceof Nucleobase; // true
+var b = Nucleobase.create('A');
 
 var n = Numbering.numbering(b, 5);
 
@@ -64,8 +62,7 @@ The text content of the numbering.
 (Is expected to be the string of a number.)
 
 ```javascript
-// a nucleobase
-b instanceof Nucleobase; // true
+var b = Nucleobase.create('C');
 
 var n = Numbering.numbering(b, 52);
 
