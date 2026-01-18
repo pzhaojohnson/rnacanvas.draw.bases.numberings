@@ -244,7 +244,7 @@ n.displacement.magnitude; // 60
 n.displacement.direction; // Math.PI / 3
 
 // set displacement by magnitude and direction
-n.displacement.magnitude; // 50;
+n.displacement.magnitude = 50;
 n.displacement.direction = Math.PI / 6;
 
 n.displacement.x; // 25 * 3**0.5
