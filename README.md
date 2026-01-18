@@ -227,6 +227,28 @@ n.textContent = '101';
 n.domNode.textContent; // "101"
 ```
 
+### `number`
+
+The number that the text content of the numbering parses to.
+
+May evaluate to `NaN` if the text content of the numbering does not parse to a number.
+
+```javascript
+var b = Nucleobase.create('A');
+
+var n = Numbering.numbering(b, 50);
+
+n.number; // 50
+
+n.number = 23;
+
+n.textContent; // "23"
+
+n.textContent = 'asdf';
+
+n.number; // NaN
+```
+
 ### `displacement`
 
 The displacement of the numbering relative to its owner base.
