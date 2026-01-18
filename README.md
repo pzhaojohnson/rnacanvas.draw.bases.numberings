@@ -54,7 +54,7 @@ n.getAttribute('fill'); // "gray"
 ### `static numbering()`
 
 Creates and returns a new numbering object
-that numberings the specified base the given number.
+that numbers the specified base the given number.
 
 ```javascript
 var b = Nucleobase.create('A');
