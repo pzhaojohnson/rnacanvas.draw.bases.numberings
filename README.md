@@ -253,8 +253,11 @@ n.number; // NaN
 
 The displacement of the numbering relative to its owner base.
 
-Displacement is calculated in reference to the center point of the numbering
-and the center point of the owner base.
+<b>The numbering must be present in the document body for displacement calculations to work.</b>
+
+Displacement is calculated as the vector
+from the center point of the owner base
+to the center point of the numbering.
 
 ```javascript
 var n = [...app.drawing.numberings][0];
