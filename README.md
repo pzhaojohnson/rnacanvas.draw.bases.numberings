@@ -213,7 +213,7 @@ n.domNode.hasAttribute('font-size'); // false
 The text content of the numbering.
 
 (Is expected to be the string of a number,
-though is allowed to be anything.)
+though the text content is allowed to be anything.)
 
 ```javascript
 var b = Nucleobase.create('C');
