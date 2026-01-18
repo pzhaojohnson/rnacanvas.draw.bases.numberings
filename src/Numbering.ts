@@ -93,6 +93,19 @@ export class Numbering<B extends Nucleobase> {
     this.domNode.textContent = textContent;
   }
 
+  /**
+   * The number that the text content of the numbering parses to.
+   *
+   * May evaluate to `NaN` if the text content of the numbering does not parse to a number.
+   */
+  get number(): number {
+    return Number.parseFloat(this.textContent);
+  }
+
+  set number(number) {
+    this.textContent = `${number}`;
+  }
+
   get displacement() {
     const getX = () => this.#displacement.x;
     const setX = (x: number) => {

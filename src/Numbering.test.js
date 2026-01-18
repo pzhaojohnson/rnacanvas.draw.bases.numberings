@@ -139,6 +139,22 @@ describe('`class Numbering`', () => {
     expect(domNode.textContent).toBe('25');
   });
 
+  test('`get number()`', () => {
+    var n = Numbering.numbering(new NucleobaseMock(), 106);
+    expect(n.number).toBe(106);
+
+    n.textContent = '52.1';
+    expect(n.number).toBe(52.1);
+  });
+
+  test('`set number()`', () => {
+    var n = Numbering.numbering(new NucleobaseMock(), 1);
+    expect(n.textContent).toBe('1');
+
+    n.number = 204;
+    expect(n.textContent).toBe('204');
+  });
+
   test('`get displacement()`', () => {
     let domNode = SVGTextElementMock.create();
     domNode.setAttribute('x', '74');
