@@ -38,6 +38,7 @@ Default values for numberings created using static methods such as `static numbe
 // any attribute can be given a default value
 Numbering.defaultValues.attributes['font-family'] = 'Arial';
 Numbering.defaultValues.attributes['font-size'] = '8';
+Numbering.defaultValues.attributes['font-weight'] = '400';
 Numbering.defaultValues.attributes['fill'] = 'gray';
 
 var b = Nucleobase.create('G');
@@ -46,6 +47,7 @@ var n = Numbering.numbering(b, 10);
 
 n.getAttribute('font-family'); // "Arial"
 n.getAttribute('font-size'); // "8"
+n.getAttribute('font-weight'); // "400"
 n.getAttribute('fill'); // "gray"
 ```
 
