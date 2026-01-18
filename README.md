@@ -35,7 +35,7 @@ n.textContent; // "100"
 Default values for numberings created using static methods such as `static numbering()`.
 
 ```javascript
-// setting some default values
+// any attribute can be given a default value
 Numbering.defaultValues.attributes['font-family'] = 'Arial';
 Numbering.defaultValues.attributes['font-size'] = '8';
 Numbering.defaultValues.attributes['fill'] = 'gray';
