@@ -30,6 +30,40 @@ n.owner === b; // true
 n.textContent; // "100"
 ```
 
+### `static defaultValues`
+
+Default values for numberings created using the `numbering()` static method.
+
+```javascript
+// setting some default values
+Numbering.defaultValues.attributes['font-family'] = 'Arial';
+Numbering.defaultValues.attributes['font-size'] = '8';
+Numbering.defaultValues.attributes['fill'] = 'gray';
+
+var b = Nucleobase.create('G');
+
+var n = Numbering.numbering(b, 10);
+
+n.getAttribute('font-family'); // "Arial"
+n.getAttribute('font-size'); // "8"
+n.getAttribute('fill'); // "gray"
+```
+
+### `static numbering()`
+
+Creates and returns a new numbering object
+that numberings the specified base the given number.
+
+```javascript
+var b = Nucleobase.create('A');
+
+var n = Numbering.numbering(b, 12);
+
+n.owner === b; // true
+
+n.textContent; // "12"
+```
+
 ### `readonly domNode`
 
 The DOM node corresponding to the numbering
