@@ -168,6 +168,26 @@ n.setAttribute('font-family', 'Arial Narrow');
 n.domNode.getAttribute('font-family'); // "Arial Narrow"
 ```
 
+### `setAttributes()`
+
+Set multiple attributes of the numbering at once using an object.
+
+```javascript
+var b = Nucleobase.create('G');
+
+var n = Numbering.numbering(b, -100);
+
+n.setAttributes({
+  'font-family': 'Helvetica',
+  'font-size': '12',
+  'fill': 'blue',
+});
+
+n.getAttribute('font-family'); // "Helvetica"
+n.getAttribute('font-size'); // "12"
+n.getAttribute('fill'); // "blue"
+```
+
 ### `removeAttribute()`
 
 Removes an attribute from the DOM node corresponding to the numbering.
