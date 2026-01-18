@@ -111,6 +111,81 @@ var n = Numbering.numbering(b, 5);
 typeof n.id; // "string"
 ```
 
+As with any element,
+the ID for a numbering should never be changed.
+
+### `hasAttribute()`
+
+Returns `true` if the DOM node corresponding to the numbering
+has the specified attribute.
+
+```javascript
+var b = Nucleobase.create('A');
+
+var n = Numbering.numbering(b, 5);
+
+n.domNode.setAttribute('fill-opacity', '0.5');
+
+n.hasAttribute('fill-opacity'); // true
+
+n.domNode.removeAttribute('fill-opacity');
+
+n.hasAttribute('fill-opacity'); // false
+```
+
+### `getAttribute()`
+
+Returns the string value of the specified attribute.
+
+Returns `null` if the DOM node corresponding to the numbering
+does not have the specified attribute.
+
+```javascript
+var b = Nucleobase.create('U');
+
+var n = Numbering.numbering(b, 10);
+
+n.domNode.setAttribute('fill', 'green');
+
+n.getAttribute('fill'); // "green"
+
+n.domNode.removeAttribute('fill');
+
+n.getAttribute('fill'); // null
+```
+
+### `setAttribute()`
+
+Sets an attribute on the DOM node corresponding to the numbering.
+
+```javascript
+var b = Nucleobase.create('T');
+
+var n = Numbering.numbering(b, 20);
+
+n.setAttribute('font-family', 'Arial Narrow');
+
+n.domNode.getAttribute('font-family'); // "Arial Narrow"
+```
+
+### `removeAttribute()`
+
+Removes an attribute from the DOM node corresponding to the numbering.
+
+```javascript
+var b = Nucleobase.create('A');
+
+var n = Numbering.numbering(b, 2);
+
+n.domNode.setAttribute('font-size', '8');
+
+n.domNode.hasAttribute('font-size'); // true
+
+n.removeAttribute('font-size');
+
+n.domNode.hasAttribute('font-size'); // false
+```
+
 ### `textContent`
 
 The text content of the numbering.
