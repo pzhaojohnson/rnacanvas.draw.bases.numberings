@@ -93,10 +93,13 @@ n.owner === b; // true
 
 ### `id`
 
-The ID of the numbering
-(corresponding to the `id` attribute of the underlying DOM node).
+The ID of the numbering.
 
-<b>All numberings must have a unique ID for RNAcanvas drawings to be savable and for undo/redo functionality to work.</b>
+(Corresponds to the `id` attribute of the underlying DOM node.)
+
+<b>All numberings must have a unique ID.</b>
+
+Otherwise RNAcanvas drawings can't be saved and undo/redo functionality won't work.
 
 Numberings created using the `static numbering()` method are automatically given unique IDs.
 
