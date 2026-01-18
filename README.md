@@ -212,7 +212,8 @@ n.domNode.hasAttribute('font-size'); // false
 
 The text content of the numbering.
 
-(Is expected to be the string of a number.)
+(Is expected to be the string of a number,
+though is allowed to be anything.)
 
 ```javascript
 var b = Nucleobase.create('C');
@@ -226,7 +227,7 @@ n.textContent = '101';
 n.domNode.textContent; // "101"
 ```
 
-### `displacement()`
+### `displacement`
 
 The displacement of the numbering relative to its owner base.
 
