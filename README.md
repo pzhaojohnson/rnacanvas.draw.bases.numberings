@@ -221,3 +221,51 @@ var n = Numbering.numbering(b, 52);
 
 n.textContent; // "52"
 ```
+
+### `displacement()`
+
+The displacement of the numbering relative to its owner base.
+
+Displacement is measured in reference to the center point of the numbering
+and the center point of the owner base.
+
+```javascript
+var n = [...app.drawing.numberings][0];
+
+// must be present in the document body
+// (for displacement calculations to work)
+document.body.contains(n.domNode); // true
+
+// set displacement using X and Y values
+n.displacement.x = 30;
+n.displacement.y = 30 * 3**0.5;
+
+n.displacement.magnitude; // 60
+n.displacement.direction; // Math.PI / 3
+
+// set displacement by magnitude and direction
+n.displacement.magnitude; // 50;
+n.displacement.direction = Math.PI / 6;
+
+n.displacement.x; // 25 * 3**0.5
+n.displacement.y; // 25
+```
+
+### `serialized()`
+
+Returns the serialized form of the numbering,
+which contains the necessary information for recreating it.
+
+This method is used when saving drawings, for instance.
+
+```javascript
+var b = Nucleobase.create('A');
+
+var n = Numbering.numbering(b, 55);
+
+var savedNumbering = n.serialized();
+
+savedNumbering.id === n.id; // true
+
+savedNumbering.ownerID === b.id; // true
+```
