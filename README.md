@@ -32,7 +32,7 @@ n.textContent; // "100"
 
 ### `static defaultValues`
 
-Default values for numberings created using the `numbering()` static method.
+Default values for numberings created using static methods such as `static numbering()`.
 
 ```javascript
 // setting some default values
