@@ -226,7 +226,7 @@ n.textContent; // "52"
 
 The displacement of the numbering relative to its owner base.
 
-Displacement is measured in reference to the center point of the numbering
+Displacement is calculated in reference to the center point of the numbering
 and the center point of the owner base.
 
 ```javascript
