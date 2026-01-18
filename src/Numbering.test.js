@@ -61,14 +61,6 @@ describe('`class Numbering`', () => {
     expect(bn.id).toBe('id-182418274892');
   });
 
-  test('`get textContent()`', () => {
-    let domNode = SVGTextElementMock.create();
-    domNode.textContent = '19.316';
-
-    let bn = new Numbering(domNode, new NucleobaseMock());
-    expect(bn.textContent).toBe('19.316');
-  });
-
   test('`hasAttribute()`', () => {
     let domNode = SVGTextElementMock.create();
     domNode.setAttribute('font-style', 'italic');
@@ -128,6 +120,23 @@ describe('`class Numbering`', () => {
 
     bn.removeAttribute('font-size');
     expect(domNode.hasAttribute('font-size')).toBeFalsy();
+  });
+
+  test('`get textContent()`', () => {
+    let domNode = SVGTextElementMock.create();
+    domNode.textContent = '19.316';
+
+    let bn = new Numbering(domNode, new NucleobaseMock());
+    expect(bn.textContent).toBe('19.316');
+  });
+
+  test('`set textContent()`', () => {
+    var domNode = SVGTextElementMock.create();
+
+    var n = new Numbering(domNode, new NucleobaseMock());
+
+    n.textContent = '25';
+    expect(domNode.textContent).toBe('25');
   });
 
   test('`get displacement()`', () => {

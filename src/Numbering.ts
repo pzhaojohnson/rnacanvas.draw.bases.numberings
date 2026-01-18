@@ -65,10 +65,6 @@ export class Numbering<B extends Nucleobase> {
     return this.domNode.id;
   }
 
-  get textContent() {
-    return this.domNode.textContent;
-  }
-
   hasAttribute(name: string): boolean {
     return this.domNode.hasAttribute(name);
   }
@@ -87,6 +83,14 @@ export class Numbering<B extends Nucleobase> {
 
   removeAttribute(name: string): void {
     this.domNode.removeAttribute(name);
+  }
+
+  get textContent() {
+    return this.domNode.textContent;
+  }
+
+  set textContent(textContent) {
+    this.domNode.textContent = textContent;
   }
 
   get displacement() {
