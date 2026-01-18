@@ -220,6 +220,10 @@ var b = Nucleobase.create('C');
 var n = Numbering.numbering(b, 52);
 
 n.textContent; // "52"
+
+n.textContent = '101';
+
+n.domNode.textContent; // "101"
 ```
 
 ### `displacement()`
