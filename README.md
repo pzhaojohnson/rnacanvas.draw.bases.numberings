@@ -19,6 +19,8 @@ import { Numbering, NumberingLine } from '@rnacanvas/draw.bases.numberings';
 
 A numbering for a [base](https://pzhaojohnson.github.io/rnacanvas.draw.bases/).
 
+Numberings move "with" their owner bases.
+
 ```javascript
 var b = Nucleobase.create('G');
 
