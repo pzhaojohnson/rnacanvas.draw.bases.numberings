@@ -61,16 +61,16 @@ export class NumberingLine<B extends Nucleobase> {
     return line;
   }
 
-  #basePadding;
-
-  #textPadding;
-
   constructor(readonly domNode: SVGLineElement, readonly owner: Numbering<B>) {
-    this.#basePadding = distance(owner.owner.centerPoint, this.point1);
+    if (!domNode.dataset.basePadding) {
+      domNode.dataset.basePadding = `${distance(owner.owner.centerPoint, this.point1)}`;
+    }
 
     let ownerBBox = Box.matching(owner.domNode.getBBox());
 
-    this.#textPadding = distance(this.point2, ownerBBox.peripheralPoint(owner.displacement.direction + Math.PI));
+    if (!domNode.dataset.textPadding) {
+      domNode.dataset.textPadding = `${distance(this.point2, ownerBBox.peripheralPoint(owner.displacement.direction + Math.PI))}`;
+    }
 
     owner.centerPoint.addEventListener('move', () => this.#reposition());
 
@@ -170,8 +170,6 @@ export class NumberingLine<B extends Nucleobase> {
 
   set basePadding(basePadding) {
     this.#basePadding = basePadding;
-
-    this.#reposition();
   }
 
   get textPadding(): number {
@@ -180,6 +178,44 @@ export class NumberingLine<B extends Nucleobase> {
 
   set textPadding(textPadding) {
     this.#textPadding = textPadding;
+  }
+
+  get #basePadding(): number {
+    if (!this.domNode.dataset.basePadding) {
+      return 0;
+    }
+
+    let basePadding = Number.parseFloat(this.domNode.dataset.basePadding);
+
+    if (!Number.isFinite(basePadding)) {
+      return 0;
+    }
+
+    return basePadding;
+  }
+
+  set #basePadding(basePadding) {
+    this.domNode.dataset.basePadding = `${basePadding}`;
+
+    this.#reposition();
+  }
+
+  get #textPadding(): number {
+    if (!this.domNode.dataset.textPadding) {
+      return 0;
+    }
+
+    let textPadding = Number.parseFloat(this.domNode.dataset.textPadding);
+
+    if (!Number.isFinite(textPadding)) {
+      return 0;
+    }
+
+    return textPadding;
+  }
+
+  set #textPadding(textPadding) {
+    this.domNode.dataset.textPadding = `${textPadding}`;
 
     this.#reposition();
   }
