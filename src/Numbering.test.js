@@ -206,6 +206,47 @@ describe('`class Numbering`', () => {
     expect(bn.domNode.getAttribute('y')).toBe(`${280 + (40 * Math.sin(5.21 * Math.PI)) - 10.5}`);
   });
 
+  test('`addEventListener()`', async () => {
+    var b = new NucleobaseMock();
+
+    var n = Numbering.numbering(b, 5);
+
+    var listeners = [jest.fn(), jest.fn(), jest.fn()];
+
+    listeners.forEach(li => n.addEventListener('change', li));
+
+    listeners.forEach(li => expect(li).not.toHaveBeenCalled());
+
+    n.displacement.y += 10;
+    await wait(500);
+
+    listeners.forEach(li => expect(li).toHaveBeenCalledTimes(1));
+  });
+
+  test('`removeEventListener()`', async () => {
+    var b = new NucleobaseMock();
+
+    var n = Numbering.numbering(b, 1);
+
+    var listeners = [jest.fn(), jest.fn(), jest.fn()];
+
+    listeners.forEach(li => n.addEventListener('change', li));
+
+    n.textContent = '101';
+    await wait(500);
+
+    listeners.forEach(li => expect(li).toHaveBeenCalledTimes(1));
+
+    n.removeEventListener('change', listeners[1]);
+
+    n.textContent = '200';
+    await wait(500);
+
+    expect(listeners[0]).toHaveBeenCalledTimes(2);
+    expect(listeners[1]).toHaveBeenCalledTimes(1); // was not called again
+    expect(listeners[2]).toHaveBeenCalledTimes(2);
+  });
+
   test('`serialized()`', () => {
     let owner = new NucleobaseMock();
     owner.id = 'id-18498128444';
@@ -263,4 +304,10 @@ class DrawingMock {
   domNode = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
   bases = [];
+}
+
+async function wait(milliseconds) {
+  return new Promise(resolve => {
+    setTimeout(() => resolve(), milliseconds);
+  });
 }

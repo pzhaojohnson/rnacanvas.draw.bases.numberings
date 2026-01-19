@@ -48,6 +48,14 @@ export class Numbering<B extends Nucleobase> {
 
   readonly centerPoint;
 
+  #eventListeners: {
+    'change': (() => void)[],
+  } = {
+    'change': [],
+  };
+
+  #changeObserver;
+
   constructor(readonly domNode: SVGTextElement, readonly owner: B) {
     this.centerPoint = new CenterPoint(domNode);
 
@@ -56,6 +64,11 @@ export class Numbering<B extends Nucleobase> {
     }
 
     owner.centerPoint.addEventListener('move', () => this.#reposition());
+
+    this.#changeObserver = new MutationObserver(() => this.#callEventListeners('change'));
+
+    // watch for any changes
+    this.#changeObserver.observe(domNode, { attributes: true, characterData: true, childList: true, subtree: true });
   }
 
   #reposition(): void {
@@ -228,6 +241,21 @@ export class Numbering<B extends Nucleobase> {
     this.domNode.dataset.displacement = JSON.stringify({ x: d.x, y: d.y });
 
     this.#reposition();
+  }
+
+  /**
+   * Listen for whenever the numbering changes.
+   */
+  addEventListener(name: 'change', listener: () => void) {
+    this.#eventListeners[name].push(listener);
+  }
+
+  #callEventListeners(name: 'change') {
+    this.#eventListeners[name].forEach(listener => listener());
+  }
+
+  removeEventListener(name: 'change', listener: () => void) {
+    this.#eventListeners[name] = this.#eventListeners[name].filter(li => li !== listener);
   }
 
   /**
