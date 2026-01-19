@@ -424,12 +424,6 @@ describe('`class NumberingLine`', () => {
 
     expect(line.serialized().id).toBe('id-9391788927482');
     expect(line.serialized().ownerID).toBe('id-212481289481');
-
-    line.basePadding = 8.25;
-    line.textPadding = 3.2219;
-
-    expect(line.serialized().basePadding).toBeCloseTo(8.25);
-    expect(line.serialized().textPadding).toBeCloseTo(3.2219);
   });
 
   test('`static deserialized()`', () => {
@@ -460,13 +454,13 @@ describe('`class NumberingLine`', () => {
     expect(line2.basePadding).toBeCloseTo(3.18);
     expect(line2.textPadding).toBeCloseTo(5.22);
 
-    // without saved base padding and text padding
-    let line3 = NumberingLine.deserialized({ ...line1.serialized(), basePadding: undefined, textPadding: undefined }, parentDrawing);
+    // with saved base padding and text padding properties
+    let line3 = NumberingLine.deserialized({ ...line1.serialized(), basePadding: 8.2, textPadding: 6.4 }, parentDrawing);
 
     expect(line3.domNode).toBe(line1.domNode);
     expect(line3.owner).toBe(line1.owner);
-    expect(line3.basePadding).toBeCloseTo(3.18);
-    expect(line3.textPadding).toBeCloseTo(5.22);
+    expect(line3.basePadding).toBeCloseTo(8.2);
+    expect(line3.textPadding).toBeCloseTo(6.4);
   });
 });
 

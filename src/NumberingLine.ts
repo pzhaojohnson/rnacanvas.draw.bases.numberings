@@ -246,10 +246,6 @@ export class NumberingLine<B extends Nucleobase> {
     return {
       id: this.id,
       ownerID: this.owner.id,
-
-      // directly save paddings (since recalculating them on deserialization is somewhat imprecise)
-      basePadding: this.basePadding,
-      textPadding: this.textPadding,
     };
   }
 
@@ -273,6 +269,7 @@ export class NumberingLine<B extends Nucleobase> {
 
     let newNumberingLine = new NumberingLine(domNode, owner);
 
+    // base padding and text padding used to be saved as properties
     if (isNumber(oldNumberingLine.basePadding)) { newNumberingLine.basePadding = oldNumberingLine.basePadding; }
     if (isNumber(oldNumberingLine.textPadding)) { newNumberingLine.textPadding = oldNumberingLine.textPadding; }
 
