@@ -281,6 +281,12 @@ n.displacement.x; // 25 * 3**0.5
 n.displacement.y; // 25
 ```
 
+Notably, displacement data for numberings
+are stored under the `data-displacement` attribute.
+
+This allows one to listen for changes in displacement
+using [mutation observers](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver).
+
 ### `serialized()`
 
 Returns the serialized form of the numbering,
