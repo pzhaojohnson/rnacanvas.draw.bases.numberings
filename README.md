@@ -287,6 +287,56 @@ are stored under the `data-displacement` attribute.
 This allows one to listen for changes in displacement
 using [mutation observers](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver).
 
+### `addEventListener()`
+
+Listen for any changes to a numbering.
+
+```javascript
+var b = Nucleobase.create('G');
+
+var n = Numbering.numbering(b, 5);
+
+var currentTextContent = n.textContent;
+
+currentTextContent; // "5"
+
+n.addEventListener('change', () => {
+  currentTextContent = n.textContent;
+});
+
+n.textContent = '10';
+
+// ...it might take a millisecond or two
+
+currentTextContent; // "10"
+```
+
+### `removeEventListener()`
+
+Remove any added event listeners.
+
+```javascript
+var b = Nucleobase.create('A');
+
+var n = Numbering.numbering(b, 20);
+
+var count = 0;
+
+var listener = () => count++;
+
+n.addEventListener('change', listener);
+
+n.number += 1;
+count; // 1
+
+n.removeEventListener('change', listener);
+
+n.number += 1;
+
+// was not incremented
+count; // 1
+```
+
 ### `serialized()`
 
 Returns the serialized form of the numbering,
