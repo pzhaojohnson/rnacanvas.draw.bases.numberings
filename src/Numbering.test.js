@@ -41,16 +41,28 @@ describe('`class Numbering`', () => {
     owner.centerPoint.x = 51;
     owner.centerPoint.y = -23;
 
-    let bn = new Numbering(domNode, owner);
+    var bn = new Numbering(domNode, owner);
 
     expect(bn.domNode).toBe(domNode);
     expect(bn.owner).toBe(owner);
 
-    owner.centerPoint.x = 74;
-    expect(bn.centerPoint.x).toBeCloseTo(57);
+    expect(bn.displacement.x).toBeCloseTo(-17);
+    expect(bn.displacement.y).toBeCloseTo(143.5);
 
+    owner.centerPoint.x = 74;
     owner.centerPoint.y = 116;
+
+    // cached and maintained displacement
+    expect(bn.centerPoint.x).toBeCloseTo(57);
     expect(bn.centerPoint.y).toBeCloseTo(259.5);
+
+    domNode.dataset.displacement = JSON.stringify({ x: 25, y: -10 });
+
+    var n = new Numbering(domNode, owner);
+
+    // does not overwrite pre-existing cached displacement
+    expect(n.displacement.x).toBeCloseTo(25);
+    expect(n.displacement.y).toBeCloseTo(-10);
   });
 
   test('`get id()`', () => {
@@ -174,20 +186,24 @@ describe('`class Numbering`', () => {
     expect(bn.displacement.direction).toBeCloseTo(Math.atan2(43.5, -20));
 
     bn.displacement.x = 12;
-    expect(domNode.getAttribute('x')).toBe('106');
+    owner.centerPoint.x += 24;
+    expect(domNode.getAttribute('x')).toBe('130');
     expect(domNode.getAttribute('y')).toBe('283');
 
     bn.displacement.y = -19;
-    expect(domNode.getAttribute('x')).toBe('106');
-    expect(domNode.getAttribute('y')).toBe('220.5');
+    owner.centerPoint.y += 50;
+    expect(domNode.getAttribute('x')).toBe('130');
+    expect(domNode.getAttribute('y')).toBe('270.5');
 
     bn.displacement.magnitude = 40;
-    expect(bn.domNode.getAttribute('x')).toBe(`${101 + (40 * Math.cos(Math.atan2(-19, 12))) - 7}`);
-    expect(bn.domNode.getAttribute('y')).toBe(`${250 + (40 * Math.sin(Math.atan2(-19, 12))) - 10.5}`);
+    owner.centerPoint.x -= 10;
+    expect(bn.domNode.getAttribute('x')).toBe(`${115 + (40 * Math.cos(Math.atan2(-19, 12))) - 7}`);
+    expect(bn.domNode.getAttribute('y')).toBe(`${300 + (40 * Math.sin(Math.atan2(-19, 12))) - 10.5}`);
 
     bn.displacement.direction = 5.21 * Math.PI;
-    expect(bn.domNode.getAttribute('x')).toBe(`${101 + (40 * Math.cos(5.21 * Math.PI)) - 7}`);
-    expect(bn.domNode.getAttribute('y')).toBe(`${250 + (40 * Math.sin(5.21 * Math.PI)) - 10.5}`);
+    owner.centerPoint.y -= 20;
+    expect(bn.domNode.getAttribute('x')).toBe(`${115 + (40 * Math.cos(5.21 * Math.PI)) - 7}`);
+    expect(bn.domNode.getAttribute('y')).toBe(`${280 + (40 * Math.sin(5.21 * Math.PI)) - 10.5}`);
   });
 
   test('`serialized()`', () => {
@@ -197,13 +213,8 @@ describe('`class Numbering`', () => {
     let bn = Numbering.numbering(owner, -157);
     bn.domNode.id = 'id-9983719842';
 
-    bn.displacement.x = 98.2;
-    bn.displacement.y = -33.6;
-
     expect(bn.serialized().id).toBe('id-9983719842');
     expect(bn.serialized().ownerID).toBe('id-18498128444');
-    expect(bn.serialized().displacement.x).toBeCloseTo(98.2);
-    expect(bn.serialized().displacement.y).toBeCloseTo(-33.6);
   });
 
   test('`static deserialized()`', () => {

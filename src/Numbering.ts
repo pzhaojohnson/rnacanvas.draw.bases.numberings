@@ -14,6 +14,8 @@ import { VersionlessNumbering } from './VersionlessNumbering';
 
 import { isPoint } from '@rnacanvas/points';
 
+import { isFinitePoint as isFiniteVector } from '@rnacanvas/points';
+
 export class Numbering<B extends Nucleobase> {
   static defaultValues = {
     attributes: {
@@ -46,19 +48,19 @@ export class Numbering<B extends Nucleobase> {
 
   readonly centerPoint;
 
-  #displacement;
-
   constructor(readonly domNode: SVGTextElement, readonly owner: B) {
     this.centerPoint = new CenterPoint(domNode);
 
-    this.#displacement = Vector.matching(displacement(owner.centerPoint, this.centerPoint));
+    if (!domNode.dataset.displacement) {
+      domNode.dataset.displacement = JSON.stringify(displacement(owner.centerPoint, this.centerPoint));
+    }
 
     owner.centerPoint.addEventListener('move', () => this.#reposition());
   }
 
   #reposition(): void {
-    this.centerPoint.x = this.owner.centerPoint.x + this.#displacement.x;
-    this.centerPoint.y = this.owner.centerPoint.y + this.#displacement.y;
+    this.centerPoint.x = this.owner.centerPoint.x + this.#displacementX;
+    this.centerPoint.y = this.owner.centerPoint.y + this.#displacementY;
   }
 
   get id() {
@@ -107,28 +109,24 @@ export class Numbering<B extends Nucleobase> {
   }
 
   get displacement() {
-    const getX = () => this.#displacement.x;
+    const getX = () => this.#displacementX;
     const setX = (x: number) => {
-      this.#displacement.x = x;
-      this.#reposition();
+      this.#displacementX = x;
     }
 
-    const getY = () => this.#displacement.y;
+    const getY = () => this.#displacementY;
     const setY = (y: number) => {
-      this.#displacement.y = y;
-      this.#reposition();
+      this.#displacementY = y;
     };
 
-    const getMagnitude = () => this.#displacement.magnitude;
+    const getMagnitude = () => this.#displacementMagnitude;
     const setMagnitude = (magnitude: number) => {
-      this.#displacement.magnitude = magnitude;
-      this.#reposition();
+      this.#displacementMagnitude = magnitude;
     };
 
-    const getDirection = () => this.#displacement.direction;
+    const getDirection = () => this.#displacementDirection;
     const setDirection = (direction: number) => {
-      this.#displacement.direction = direction;
-      this.#reposition();
+      this.#displacementDirection = direction;
     };
 
     return {
@@ -146,6 +144,92 @@ export class Numbering<B extends Nucleobase> {
     };
   }
 
+  get #displacementX() {
+    if (!this.domNode.dataset.displacement) {
+      return 0;
+    }
+
+    let d: unknown;
+
+    try {
+      d = JSON.parse(this.domNode.dataset.displacement);
+    } catch {
+      return 0;
+    }
+
+    if (!isFiniteVector(d)) {
+      return 0;
+    }
+
+    return d.x;
+  }
+
+  set #displacementX(displacementX) {
+    this.domNode.dataset.displacement = JSON.stringify({
+      x: displacementX,
+      y: this.#displacementY,
+    });
+
+    this.#reposition();
+  }
+
+  get #displacementY() {
+    if (!this.domNode.dataset.displacement) {
+      return 0;
+    }
+
+    let d: unknown;
+
+    try {
+      d = JSON.parse(this.domNode.dataset.displacement);
+    } catch {
+      return 0;
+    }
+
+    if (!isFiniteVector(d)) {
+      return 0;
+    }
+
+    return d.y;
+  }
+
+  set #displacementY(displacementY) {
+    this.domNode.dataset.displacement = JSON.stringify({
+      x: this.#displacementX,
+      y: displacementY,
+    });
+
+    this.#reposition();
+  }
+
+  get #displacementMagnitude() {
+    return Vector.matching({ x: this.#displacementX, y: this.#displacementY }).magnitude;
+  }
+
+  set #displacementMagnitude(displacementMagnitude) {
+    let d = Vector.matching({ x: this.#displacementX, y: this.#displacementY });
+
+    d.magnitude = displacementMagnitude;
+
+    this.domNode.dataset.displacement = JSON.stringify({ x: d.x, y: d.y });
+
+    this.#reposition();
+  }
+
+  get #displacementDirection() {
+    return Vector.matching({ x: this.#displacementX, y: this.#displacementY }).direction;
+  }
+
+  set #displacementDirection(displacementDirection) {
+    let d = Vector.matching({ x: this.#displacementX, y: this.#displacementY });
+
+    d.direction = displacementDirection;
+
+    this.domNode.dataset.displacement = JSON.stringify({ x: d.x, y: d.y });
+
+    this.#reposition();
+  }
+
   /**
    * Returns the serialized form of the numbering.
    */
@@ -153,9 +237,6 @@ export class Numbering<B extends Nucleobase> {
     return {
       id: this.id,
       ownerID: this.owner.id,
-
-      // directly save (since recalculating displacement during deserialization is somewhat imprecise)
-      displacement: { x: this.displacement.x, y: this.displacement.y },
     };
   }
 
