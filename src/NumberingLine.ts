@@ -23,7 +23,7 @@ export class NumberingLine<B extends Nucleobase> {
       'stroke-opacity': '1',
     },
     basePadding: 5,
-    numberingPadding: 1,
+    textPadding: 1,
   };
 
   /**
@@ -50,27 +50,27 @@ export class NumberingLine<B extends Nucleobase> {
   /**
    * Creates and returns a new numbering line
    * for the given numbering
-   * with zero base padding and zero numbering padding.
+   * with zero base padding and zero text padding.
    */
   static unpadded<B extends Nucleobase>(n: Numbering<B>): NumberingLine<B> {
     let line = NumberingLine.connecting(n);
 
     line.basePadding = 0;
-    line.numberingPadding = 0;
+    line.textPadding = 0;
 
     return line;
   }
 
   #basePadding;
 
-  #numberingPadding;
+  #textPadding;
 
   constructor(readonly domNode: SVGLineElement, readonly owner: Numbering<B>) {
     this.#basePadding = distance(owner.owner.centerPoint, this.point1);
 
     let ownerBBox = Box.matching(owner.domNode.getBBox());
 
-    this.#numberingPadding = distance(this.point2, ownerBBox.peripheralPoint(owner.displacement.direction + Math.PI));
+    this.#textPadding = distance(this.point2, ownerBBox.peripheralPoint(owner.displacement.direction + Math.PI));
 
     owner.centerPoint.addEventListener('move', () => this.#reposition());
 
@@ -141,7 +141,7 @@ export class NumberingLine<B extends Nucleobase> {
     this.owner.displacement.magnitude = (
       this.basePadding
       + length
-      + this.numberingPadding
+      + this.textPadding
       + distance(this.owner.centerPoint, ownerBBox.peripheralPoint(this.owner.displacement.direction + Math.PI))
     );
   }
@@ -170,15 +170,17 @@ export class NumberingLine<B extends Nucleobase> {
 
   set basePadding(basePadding) {
     this.#basePadding = basePadding;
+
     this.#reposition();
   }
 
-  get numberingPadding(): number {
-    return this.#numberingPadding;
+  get textPadding(): number {
+    return this.#textPadding;
   }
 
-  set numberingPadding(numberingPadding) {
-    this.#numberingPadding = numberingPadding;
+  set textPadding(textPadding) {
+    this.#textPadding = textPadding;
+
     this.#reposition();
   }
 
@@ -186,7 +188,7 @@ export class NumberingLine<B extends Nucleobase> {
     values.attributes ? this.setAttributes(values.attributes) : {};
 
     isNumber(values.basePadding) ? this.basePadding = values.basePadding : {};
-    isNumber(values.numberingPadding) ? this.numberingPadding = values.numberingPadding : {};
+    isNumber(values.textPadding) ? this.textPadding = values.textPadding : {};
   }
 
   #reposition() {
@@ -197,8 +199,8 @@ export class NumberingLine<B extends Nucleobase> {
 
     let peripheralPoint = Box.matching(this.owner.domNode.getBBox()).peripheralPoint(d + Math.PI);
 
-    this.domNode.setAttribute('x2', `${peripheralPoint.x + (this.#numberingPadding * Math.cos(d + Math.PI))}`);
-    this.domNode.setAttribute('y2', `${peripheralPoint.y + (this.#numberingPadding * Math.sin(d + Math.PI))}`);
+    this.domNode.setAttribute('x2', `${peripheralPoint.x + (this.#textPadding * Math.cos(d + Math.PI))}`);
+    this.domNode.setAttribute('y2', `${peripheralPoint.y + (this.#textPadding * Math.sin(d + Math.PI))}`);
   }
 
   /**
@@ -211,7 +213,7 @@ export class NumberingLine<B extends Nucleobase> {
 
       // directly save paddings (since recalculating them on deserialization is somewhat imprecise)
       basePadding: this.basePadding,
-      numberingPadding: this.numberingPadding,
+      textPadding: this.textPadding,
     };
   }
 
@@ -236,7 +238,7 @@ export class NumberingLine<B extends Nucleobase> {
     let newNumberingLine = new NumberingLine(domNode, owner);
 
     if (isNumber(oldNumberingLine.basePadding)) { newNumberingLine.basePadding = oldNumberingLine.basePadding; }
-    if (isNumber(oldNumberingLine.numberingPadding)) { newNumberingLine.numberingPadding = oldNumberingLine.numberingPadding; }
+    if (isNumber(oldNumberingLine.textPadding)) { newNumberingLine.textPadding = oldNumberingLine.textPadding; }
 
     return newNumberingLine;
   }
@@ -245,7 +247,7 @@ export class NumberingLine<B extends Nucleobase> {
 type NumberingLineValues = {
   attributes: { [name: string]: string },
   basePadding: number;
-  numberingPadding: number;
+  textPadding: number;
 };
 
 /**

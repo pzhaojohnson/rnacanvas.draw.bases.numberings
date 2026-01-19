@@ -52,7 +52,12 @@ export class VersionlessNumberingLine {
     return this.#savedNumberingLine.basePadding;
   }
 
-  get numberingPadding(): unknown {
-    return this.#savedNumberingLine.numberingPadding;
+  get textPadding(): unknown {
+    // used to be saved under numbering padding
+    if (this.#savedNumberingLine.numberingPadding !== undefined) {
+      return this.#savedNumberingLine.numberingPadding;
+    }
+
+    return this.#savedNumberingLine.textPadding;
   }
 }

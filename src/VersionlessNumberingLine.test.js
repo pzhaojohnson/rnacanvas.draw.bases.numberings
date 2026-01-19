@@ -23,9 +23,11 @@ describe('`class VersionlessNumberingLine`', () => {
     expect(numberingLine.basePadding).toBe(28.451);
   });
 
-  test('`get numberingPadding()`', () => {
-    var numberingLine = new VersionlessNumberingLine({ numberingPadding: 104.82 });
+  test('`get textPadding()`', () => {
+    var numberingLine = new VersionlessNumberingLine({ textPadding: 25.2 });
+    expect(numberingLine.textPadding).toBe(25.2);
 
-    expect(numberingLine.numberingPadding).toBe(104.82);
+    var numberingLine = new VersionlessNumberingLine({ numberingPadding: 104.82 });
+    expect(numberingLine.textPadding).toBe(104.82);
   });
 });

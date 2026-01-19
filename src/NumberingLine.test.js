@@ -29,7 +29,7 @@ describe('`class NumberingLine`', () => {
     NumberingLine.defaultValues.attributes['stroke'] = '#897118';
 
     NumberingLine.defaultValues.basePadding = 2.74;
-    NumberingLine.defaultValues.numberingPadding = 6.28;
+    NumberingLine.defaultValues.textPadding = 6.28;
 
     let line = NumberingLine.connecting(n);
 
@@ -46,7 +46,7 @@ describe('`class NumberingLine`', () => {
     // applied default values
     expect(line.getAttribute('stroke')).toBe('#897118');
     expect(line.basePadding).toBeCloseTo(2.74);
-    expect(line.numberingPadding).toBeCloseTo(6.28);
+    expect(line.textPadding).toBeCloseTo(6.28);
   });
 
   test('`static unpadded()`', () => {
@@ -54,16 +54,16 @@ describe('`class NumberingLine`', () => {
 
     // make nonzero
     NumberingLine.defaultValues.basePadding = 8;
-    NumberingLine.defaultValues.numberingPadding = 9;
+    NumberingLine.defaultValues.textPadding = 9;
 
     let line1 = NumberingLine.unpadded(n);
     expect(line1.basePadding).toBeCloseTo(0);
-    expect(line1.numberingPadding).toBeCloseTo(0);
+    expect(line1.textPadding).toBeCloseTo(0);
 
     // would otherwise have nonzero paddings
     let line2 = NumberingLine.connecting(n);
     expect(line2.basePadding).not.toBeCloseTo(0);
-    expect(line2.numberingPadding).not.toBeCloseTo(0);
+    expect(line2.textPadding).not.toBeCloseTo(0);
   });
 
   test('`constructor()`', () => {
@@ -80,7 +80,7 @@ describe('`class NumberingLine`', () => {
     let line1 = NumberingLine.connecting(owner);
 
     line1.basePadding = 4.2;
-    line1.numberingPadding = 2.7;
+    line1.textPadding = 2.7;
 
     let line2 = new NumberingLine(line1.domNode, owner);
 
@@ -88,7 +88,7 @@ describe('`class NumberingLine`', () => {
     expect(line2.owner).toBe(owner);
 
     expect(line2.basePadding).toBeCloseTo(4.2);
-    expect(line2.numberingPadding).toBeCloseTo(2.7);
+    expect(line2.textPadding).toBeCloseTo(2.7);
 
     // move owner numbering
     owner.centerPoint.x += 10;
@@ -249,7 +249,7 @@ describe('`class NumberingLine`', () => {
     line.owner.owner.centerPoint.y = -205;
 
     line.basePadding = 5.2;
-    line.numberingPadding = 2.8;
+    line.textPadding = 2.8;
 
     expect(line.length).toBeCloseTo(253.55605611304114);
 
@@ -291,7 +291,7 @@ describe('`class NumberingLine`', () => {
     line.owner.owner.centerPoint.y = -205;
 
     line.basePadding = 5.2;
-    line.numberingPadding = 2.8;
+    line.textPadding = 2.8;
 
     expect(line.direction).toBeCloseTo(1.8419423009857232);
     expect(line.length).toBeCloseTo(253.55605611304114);
@@ -359,7 +359,7 @@ describe('`class NumberingLine`', () => {
     expect(Number.parseFloat(domNode.getAttribute('y2'))).toBeCloseTo(-23);
   });
 
-  test('`get numberingPadding()`', () => {
+  test('`get textPadding()`', () => {
     let owner = new NumberingMock();
 
     owner.domNode.setAttribute('font-size', '9');
@@ -370,14 +370,14 @@ describe('`class NumberingLine`', () => {
     owner.owner.centerPoint.x = 56;
     owner.owner.centerPoint.y = 88;
 
-    NumberingLine.defaultValues.numberingPadding = 6.3;
+    NumberingLine.defaultValues.textPadding = 6.3;
 
     let line = NumberingLine.connecting(owner);
 
-    expect(line.numberingPadding).toBeCloseTo(6.3);
+    expect(line.textPadding).toBeCloseTo(6.3);
   });
 
-  test('`set numberingPadding()`', () => {
+  test('`set textPadding()`', () => {
     let owner = new NumberingMock();
 
     owner.domNode.setAttribute('font-size', '11');
@@ -389,10 +389,10 @@ describe('`class NumberingLine`', () => {
     owner.owner.centerPoint.y = 88;
 
     let line = NumberingLine.unpadded(owner);
-    expect(line.numberingPadding).toBeCloseTo(0);
+    expect(line.textPadding).toBeCloseTo(0);
 
-    line.numberingPadding = 1.6;
-    expect(line.numberingPadding).toBeCloseTo(1.6);
+    line.textPadding = 1.6;
+    expect(line.textPadding).toBeCloseTo(1.6);
 
     // the numbering line was repositioned
     expect(Number.parseFloat(line.domNode.getAttribute('x1'))).toBeCloseTo(56);
@@ -411,9 +411,9 @@ describe('`class NumberingLine`', () => {
     expect(line.getAttribute('stroke-width')).toBe('5.1');
     expect(line.getAttribute('stroke-opacity')).toBe('0.31');
 
-    line.set({ basePadding: 4.19, numberingPadding: 5.83 });
+    line.set({ basePadding: 4.19, textPadding: 5.83 });
     expect(line.basePadding).toBeCloseTo(4.19);
-    expect(line.numberingPadding).toBeCloseTo(5.83);
+    expect(line.textPadding).toBeCloseTo(5.83);
   });
 
   test('`serialized()`', () => {
@@ -426,10 +426,10 @@ describe('`class NumberingLine`', () => {
     expect(line.serialized().ownerID).toBe('id-212481289481');
 
     line.basePadding = 8.25;
-    line.numberingPadding = 3.2219;
+    line.textPadding = 3.2219;
 
     expect(line.serialized().basePadding).toBeCloseTo(8.25);
-    expect(line.serialized().numberingPadding).toBeCloseTo(3.2219);
+    expect(line.serialized().textPadding).toBeCloseTo(3.2219);
   });
 
   test('`static deserialized()`', () => {
@@ -448,7 +448,7 @@ describe('`class NumberingLine`', () => {
     expect(line1.owner).toBeTruthy();
 
     line1.basePadding = 3.18;
-    line1.numberingPadding = 5.22;
+    line1.textPadding = 5.22;
 
     // not defined by JSDOM by default
     globalThis.SVGLineElement = globalThis.SVGLineElement ?? SVGElement;
@@ -458,15 +458,15 @@ describe('`class NumberingLine`', () => {
     expect(line2.domNode).toBe(line1.domNode);
     expect(line2.owner).toBe(line1.owner);
     expect(line2.basePadding).toBeCloseTo(3.18);
-    expect(line2.numberingPadding).toBeCloseTo(5.22);
+    expect(line2.textPadding).toBeCloseTo(5.22);
 
-    // without saved base padding and numbering padding
-    let line3 = NumberingLine.deserialized({ ...line1.serialized(), basePadding: undefined, numberingPadding: undefined }, parentDrawing);
+    // without saved base padding and text padding
+    let line3 = NumberingLine.deserialized({ ...line1.serialized(), basePadding: undefined, textPadding: undefined }, parentDrawing);
 
     expect(line3.domNode).toBe(line1.domNode);
     expect(line3.owner).toBe(line1.owner);
     expect(line3.basePadding).toBeCloseTo(3.18);
-    expect(line3.numberingPadding).toBeCloseTo(5.22);
+    expect(line3.textPadding).toBeCloseTo(5.22);
   });
 });
 
