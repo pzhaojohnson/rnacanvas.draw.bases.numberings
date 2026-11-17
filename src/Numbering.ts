@@ -295,4 +295,15 @@ export class Numbering<B extends Nucleobase> {
 
     return newNumbering;
   }
+
+  /**
+   * (An alias for the `static deserialized()` method.)
+   *
+   * Recreates a saved numbering from its serialized form.
+   *
+   * Throws if unable to do so.
+   */
+  static recreate<B extends Nucleobase>(savedNumbering: unknown, parentDrawing: Drawing<B>) {
+    return Numbering.deserialized(savedNumbering, parentDrawing);
+  }
 }

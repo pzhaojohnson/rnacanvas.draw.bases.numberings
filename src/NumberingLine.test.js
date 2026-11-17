@@ -14,6 +14,11 @@ import { EventfulPoint } from './EventfulPoint';
 
 import { distance, direction } from '@rnacanvas/points';
 
+beforeAll(() => {
+  expect(globalThis.SVGLineElement).toBeFalsy();
+  globalThis.SVGLineElement = globalThis.SVGElement;
+});
+
 describe('`class NumberingLine`', () => {
   test('`static connecting()`', () => {
     let n = new NumberingMock();
@@ -444,9 +449,6 @@ describe('`class NumberingLine`', () => {
     line1.basePadding = 3.18;
     line1.textPadding = 5.22;
 
-    // not defined by JSDOM by default
-    globalThis.SVGLineElement = globalThis.SVGLineElement ?? SVGElement;
-
     let line2 = NumberingLine.deserialized(line1.serialized(), parentDrawing);
 
     expect(line2.domNode).toBe(line1.domNode);
@@ -461,6 +463,29 @@ describe('`class NumberingLine`', () => {
     expect(line3.owner).toBe(line1.owner);
     expect(line3.basePadding).toBeCloseTo(8.2);
     expect(line3.textPadding).toBeCloseTo(6.4);
+  });
+
+  test('`static recreate()`', () => {
+    let parentDrawing = new DrawingMock();
+
+    [1, 2, 3, 4, 5].forEach(() => parentDrawing.domNode.append(SVGLineElementMock.create()));
+    [1, 2, 3, 4, 5, 6].forEach(() => parentDrawing.numberings.push(new NumberingMock()));
+
+    let line1 = new NumberingLine(SVGLineElementMock.create(), new NumberingMock());
+    line1.domNode.id = 'id-8798147928725';
+
+    parentDrawing.domNode.insertBefore(line1.domNode, parentDrawing.domNode.childNodes[2]);
+    parentDrawing.numberings.splice(4, 0, line1.owner);
+
+    line1.basePadding = 3.18;
+    line1.textPadding = 5.22;
+
+    let line2 = NumberingLine.recreate(line1.serialized(), parentDrawing);
+
+    expect(line2.domNode).toBe(line1.domNode);
+    expect(line2.owner).toBe(line1.owner);
+    expect(line2.basePadding).toBeCloseTo(3.18);
+    expect(line2.textPadding).toBeCloseTo(5.22);
   });
 });
 

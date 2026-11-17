@@ -275,6 +275,17 @@ export class NumberingLine<B extends Nucleobase> {
 
     return newNumberingLine;
   }
+
+  /**
+   * (An alias for the `static deserialized()` method.)
+   *
+   * Recreates a saved numbering line from its serialized form.
+   *
+   * Throws if unable to do so.
+   */
+  static recreate<B extends Nucleobase>(savedNumberingLine: unknown, parentDrawing: Drawing<B>): NumberingLine<B> {
+    return NumberingLine.deserialized(savedNumberingLine, parentDrawing);
+  }
 }
 
 type NumberingLineValues = {

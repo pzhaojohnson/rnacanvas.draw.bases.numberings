@@ -8,6 +8,11 @@ import { SVGTextElementMock } from './SVGTextElementMock';
 
 import { NucleobaseMock } from './NucleobaseMock';
 
+beforeAll(() => {
+  expect(globalThis.SVGTextElement).toBeFalsy();
+  globalThis.SVGTextElement = globalThis.SVGElement;
+});
+
 describe('`class Numbering`', () => {
   test('`static numbering()`', () => {
     let b = new NucleobaseMock();
@@ -270,9 +275,6 @@ describe('`class Numbering`', () => {
     bn1.displacement.x = -174;
     bn1.displacement.y = 88.4;
 
-    // not defined by JSDOM by default
-    globalThis.SVGTextElement = globalThis.SVGTextElement ?? SVGElement;
-
     let bn2 = Numbering.deserialized(bn1.serialized(), parentDrawing);
 
     expect(bn2.domNode).toBe(bn1.domNode);
@@ -287,6 +289,24 @@ describe('`class Numbering`', () => {
     expect(bn3.owner).toBe(bn1.owner);
     expect(bn3.displacement.x).toBeCloseTo(-174);
     expect(bn3.displacement.y).toBeCloseTo(88.4);
+  });
+
+  test('`static recreate()`', () => {
+    let parentDrawing = new DrawingMock();
+    for (let i = 0; i < 10; i++) { parentDrawing.bases.push(new NucleobaseMock()); }
+
+    let bn1 = Numbering.numbering(parentDrawing.bases[6], 112);
+    parentDrawing.domNode.insertBefore(bn1.domNode, parentDrawing.bases[3].domNode);
+
+    bn1.displacement.x = -174;
+    bn1.displacement.y = 88.4;
+
+    let bn2 = Numbering.recreate(bn1.serialized(), parentDrawing);
+
+    expect(bn2.domNode).toBe(bn1.domNode);
+    expect(bn2.owner).toBe(bn1.owner);
+    expect(bn2.displacement.x).toBeCloseTo(-174);
+    expect(bn2.displacement.y).toBeCloseTo(88.4);
   });
 });
 

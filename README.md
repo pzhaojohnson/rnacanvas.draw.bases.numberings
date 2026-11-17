@@ -355,3 +355,43 @@ savedNumbering.id === n.id; // true
 
 savedNumbering.ownerID === b.id; // true
 ```
+
+### `static recreate()`
+
+Recreates a saved numbering from its serialized form
+(given the parent drawing that it's in).
+
+Throws if unable to do so.
+
+The DOM node for the saved numbering and its owner base must be present in the parent drawing.
+
+```javascript
+var savedNumbering = n.serialized();
+
+var recreatedNumbering = Numbering.recreate(savedNumbering, parentDrawing);
+
+recreatedNumbering.domNode === n.domNode; // true
+
+recreatedNumbering.owner === n.owner; // true
+```
+
+## `class NumberingLine`
+
+### `static recreate()`
+
+Recreates a saved numbering line from its serialized form
+(given the parent drawing that it's in).
+
+Throws if unable to do so.
+
+The DOM node for the saved numbering line and its owner numbering must be present in the parent drawing.
+
+```javascript
+var savedNumberingLine = line.serialized();
+
+var recreatedLine = NumberingLine.recreate(savedNumberingLine, parentDrawing);
+
+recreatedLine.domNode === line.domNode; // true
+
+recreatedLine.owner === line.owner; // true
+```
